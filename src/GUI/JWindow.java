@@ -37,6 +37,7 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("East-Varrock");
                 comboBox2.addItem("Draynor village");
                 comboBox2.addItem("West-Varrock");
+                comboBox2.addItem("Current area");
                 break;
             case "Oak":
                 comboBox2.removeAllItems();
@@ -46,6 +47,7 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("South-Falador");
                 comboBox2.addItem("Draynor village");
                 comboBox2.addItem("West-Varrock");
+                comboBox2.addItem("Current area");
                 break;
             case "Willow":
                 comboBox2.removeAllItems();
@@ -54,6 +56,7 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("East-Draynor");
                 comboBox2.addItem("South-Rimmington");
                 comboBox2.addItem("North-Lumbridge");
+                comboBox2.addItem("Current area");
                 break;
             case "Yew":
                 comboBox2.removeAllItems();
@@ -63,6 +66,7 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("West-Draynor");
                 comboBox2.addItem("Falador");
                 comboBox2.addItem("Lumbridge");
+                comboBox2.addItem("Current area");
                 checkBox3.setEnabled(false);
                 break;
         }
