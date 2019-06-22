@@ -21,6 +21,7 @@ public class JWindow extends JFrame {
     public JWindow(MainClass main) {
         this.ctx = main;
         initComponents();
+        comboBox1.addItem("Magic tree");
     }
 
     private void button1ActionPerformed(ActionEvent e) {
@@ -69,6 +70,10 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("Current area");
                 checkBox3.setEnabled(false);
                 break;
+            case "Magic tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Mage Training Area");
+                checkBox3.setEnabled(false);
         }
     }
     public String getTreetype(){

@@ -52,7 +52,9 @@ public class MainClass extends AbstractScript {
     Area DraynorBank = new Area(3092, 3246, 3097, 3240);
     Area Edgevillagebank = new Area(3091, 3498, 3099, 3487);
     Area FaladorEastbank = new Area(3009, 3358, 3019, 3355);
+    Area DuelArenaBank = new Area(3379, 3266, 3384, 3272);
     Area RimmingtonShop = new Area(2947, 3217, 2950, 3212);
+    private int range = 150;
 
     Area Selectedarea = new Area();
     //Area burnedarea = new Area();
@@ -78,7 +80,17 @@ public class MainClass extends AbstractScript {
             logcuts++;
         }
         if(message.getMessage().contains("You can't light a fire here")){
+            getWalking().walk(Selectedarea.getRandomTile());
             burnarea = true;
+        }
+        if(message.getMessage().contains("I can't reach that!")){
+
+            if(getGameObjects().closest("Wilderness Ditch").exists()){
+                activity = "Jump!";
+                WildernessJumping();
+            }else {
+                walkingtoarea(Selectedarea);
+            }
         }
     }
     @Override
@@ -128,7 +140,7 @@ public class MainClass extends AbstractScript {
                             remoteBankcutter(WestVarrokbank, window.getTreetype());
                             break;
                         case "Current area":
-                            RemoteCutter(new Area(getLocalPlayer().getX() -100,getLocalPlayer().getY() -100,getLocalPlayer().getX() +100,getLocalPlayer().getY()+100),window.getTreetype());
+                            RemoteCutter(new Area(getLocalPlayer().getX() - range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
                             break;
                     }
                     break;
@@ -153,7 +165,7 @@ public class MainClass extends AbstractScript {
                             remoteBankcutter(WestVarrokbank, window.getTreetype());
                             break;
                         case "Current area":
-                            RemoteCutter(new Area(getLocalPlayer().getX() -100,getLocalPlayer().getY() -100,getLocalPlayer().getX() +100,getLocalPlayer().getY()+100),window.getTreetype());
+                            RemoteCutter(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
                             break;
                     }
                 case "Willow":
@@ -169,6 +181,9 @@ public class MainClass extends AbstractScript {
                             break;
                         case "North-Lumbridge":
                             RemoteCutter(new Area(3219,3311,3224,3297),window.getTreetype());
+                            break;
+                        case "Current area":
+                            RemoteCutter(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
                             break;
 
                     }
@@ -193,7 +208,13 @@ public class MainClass extends AbstractScript {
                             MultiCutter(EastVarrokbank,  new Area(3134,3265,3141,3226), window.getTreetype(), window.getTreetype()+" logs");
                             break;
                         case "Current area":
-                            RemoteCutter(new Area(getLocalPlayer().getX() -100,getLocalPlayer().getY() -100,getLocalPlayer().getX() +100,getLocalPlayer().getY()+100),window.getTreetype());
+                            RemoteCutter(new Area(getLocalPlayer().getX() - range,getLocalPlayer().getY() - range,getLocalPlayer().getX() + range,getLocalPlayer().getY()+ range),window.getTreetype());
+                            break;
+                    }
+                case "Magic tree":
+                    switch (window.getAreaLocation()) {
+                        case "Mage Training Area":
+                            MultiCutter(DuelArenaBank,new Area(3353,3293,3373,3360), window.getTreetype(), "Magic logs");
                             break;
                     }
             }
@@ -267,7 +288,7 @@ public class MainClass extends AbstractScript {
 
     }
     private void RemoteCutter(Area areana, String Treetype){
-        String logname = Treetype + "Logs";
+        String logname = Treetype + " logs";
         if(first){
             Selectedarea = areana;
             first = false;
@@ -275,10 +296,15 @@ public class MainClass extends AbstractScript {
         if(getInventory().isFull()){
             if(window.getburn() && checktinderbox()){
                 activity = "Burn logs";
-                burnlogs(Treetype + " Logs");
+                if(Treetype == "Tree"){
+                    burnlogs("Logs");
+                }else{
+                    burnlogs(logname);
+                }
+
             }else {
-                if(getInventory().contains(Treetype + " Logs")){
-                    getInventory().dropAll(Treetype + " Logs");
+                if(getInventory().contains(logname)){
+                    getInventory().dropAll(logname);
                 }
             }
             sleep(500, 1500);
@@ -288,7 +314,6 @@ public class MainClass extends AbstractScript {
                     cutting();
                 }else{
                     if(chopping(Treetype)){
-                        Selectedarea = closesYew();
                         sleep(300, 1000);
                     }
                 }
@@ -325,10 +350,6 @@ public class MainClass extends AbstractScript {
         second2 = System.currentTimeMillis()/ 1000l;
         return dot;
     }
-    private Area closesYew(){
-        GameObject tree = getGameObjects().closest("Yew");
-        return  new Area(tree.getX()+1, tree.getY()+1, tree.getX()-1,tree.getY()-1);
-    }
     private void debug(){
         closestreelocal(window.getTreetype());
     }
@@ -359,17 +380,21 @@ public class MainClass extends AbstractScript {
     }
     private void walkingtoarea(Area Selectedarea){
         activity = "Walking to area!";
-        if((getLocalPlayer().getX() == playerpossitionX && getLocalPlayer().getY() == playerpossitionY)){
-             getWalking().walk(Selectedarea.getRandomTile());
-        }
+        getWalking().walk(Selectedarea.getRandomTile());
         if(getWalking().getRunEnergy() >= 20){
             if(!(getWalking().isRunEnabled())){
                 getWalking().toggleRun();
             }
         }
-        playerpossitionX = getLocalPlayer().getX();
-        playerpossitionY = getLocalPlayer().getY();
-        sleep(100, 1000);
+
+        sleep(100, 300);
+    }
+    private void WildernessJumping(){
+        GameObject gap = getGameObjects().closest("Wilderness Ditch");
+        gap.interact("Cross");
+        sleep(1000, 1500);
+        getWidgets().getWidget(475).getChild(11).interact();
+        sleep(100, 250);
     }
     private void chop(String treename){
         activity = "Chop";
@@ -403,28 +428,30 @@ public class MainClass extends AbstractScript {
         }
     }
     private void burnlogs(String logname){
-        if(getLocalPlayer().isAnimating()) {
-            sleep(1500, 3000);
-            burnlogs(logname);
-        }else if(burnarea){
-            if((getLocalPlayer().getX() == playerpossitionX && getLocalPlayer().getY() == playerpossitionY)){
-                getWalking().walk(Selectedarea.getRandomTile());
-            }else{
+        while(getInventory().contains(logname)){
+            if(getLocalPlayer().isAnimating()){
+                sleep(1500, 3000);
+            }else if(burnarea && !getMoving()){
+                sleep(200);
                 burnarea = false;
-            }
-            playerpossitionX = getLocalPlayer().getX();
-            playerpossitionY = getLocalPlayer().getY();
-            sleep(500, 1000);
-            burnlogs(logname);
-        }else{
-            if (getInventory().contains(logname)){
-                getInventory().interact("Tinderbox", "Use");
-                getInventory().interact(logname, "Use");
-                sleep(1000, 1500);
-                burnlogs(logname);
+            }else{
+                if (getInventory().contains(logname)){
+                    getInventory().interact("Tinderbox", "Use");
+                    getInventory().interact(logname, "Use");
+                    sleep(1500, 3000);
+                }
             }
         }
-
+    }
+    private boolean getMoving(){
+        playerpossitionX = getLocalPlayer().getX();
+        playerpossitionY = getLocalPlayer().getY();
+        sleep(200);
+        if((getLocalPlayer().getX() == playerpossitionX && getLocalPlayer().getY() == playerpossitionY)){
+            return false;
+        }else{
+            return true;
+        }
     }
     private void banking(String logname){
             activity = "Banking";
@@ -437,7 +464,7 @@ public class MainClass extends AbstractScript {
                 }
             }
     }
-    private void selling(String logname){
+    /*private void selling(String logname){
         activity = "Selling";
         NPC shopper = getNpcs().closest(npc -> npc != null && npc.hasAction("Trade"));
         if(shopper.interact("Trade")){
@@ -450,7 +477,7 @@ public class MainClass extends AbstractScript {
                 sleep(500, 3000);
             }
         }
-    }
+    }*/
     private void antiBan() {
         Random srand = new Random();
         double chances = srand.nextDouble();
@@ -483,8 +510,9 @@ public class MainClass extends AbstractScript {
             sleep(2888, 5111);
             getMouse().isMouseInScreen();
         }else if(chances > 0.350 && chances < 0.355){
-            activity = "Anti-ban: Open magic tab";
-            log("Anti-ban: Open magic tab");
+            //getWidgets().
+            activity = "Anti-ban: Open Random tab";
+            log("Anti-ban: Open Random tab");
             sleep(200, 500);
         }else if(chances > 0.355 && chances < 0.360){
             activity = "Anti-ban: Hop world";
