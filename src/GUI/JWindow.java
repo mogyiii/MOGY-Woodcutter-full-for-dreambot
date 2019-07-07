@@ -40,6 +40,10 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("West-Varrock");
                 comboBox2.addItem("Current area");
                 break;
+            case "Achey tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
             case "Oak":
                 comboBox2.removeAllItems();
                 comboBox2.addItem("GrandExchange");
@@ -59,6 +63,26 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("North-Lumbridge");
                 comboBox2.addItem("Current area");
                 break;
+            case "Teak tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
+            case "Maple tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
+            case "Arctic pine":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
+            case "Hollow tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
+            case "Mahogany tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
             case "Yew":
                 comboBox2.removeAllItems();
                 comboBox2.addItem("EdgeVillage");
@@ -68,12 +92,17 @@ public class JWindow extends JFrame {
                 comboBox2.addItem("Falador");
                 comboBox2.addItem("Lumbridge");
                 comboBox2.addItem("Current area");
-                checkBox3.setEnabled(false);
                 break;
             case "Magic tree":
                 comboBox2.removeAllItems();
                 comboBox2.addItem("Mage Training Area");
-                checkBox3.setEnabled(false);
+                comboBox2.addItem("Current area");
+                break;
+            case "Redwood tree":
+                comboBox2.removeAllItems();
+                comboBox2.addItem("Current area");
+                break;
+
         }
     }
     public String getTreetype(){
