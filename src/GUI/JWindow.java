@@ -21,7 +21,14 @@ public class JWindow extends JFrame {
     public JWindow(MainClass main) {
         this.ctx = main;
         initComponents();
+        comboBox1.addItem("Achey tree");
+        comboBox1.addItem("Teak tree");
+        comboBox1.addItem("Maple tree");
+        comboBox1.addItem("Arctic pine");
+        comboBox1.addItem("Hollow tree");
+        comboBox1.addItem("Mahogany tree");
         comboBox1.addItem("Magic tree");
+        comboBox1.addItem("Redwood tree");
     }
 
     private void button1ActionPerformed(ActionEvent e) {
