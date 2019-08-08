@@ -18,6 +18,7 @@ public class JWindow extends JFrame {
     private boolean debugger = false;
     private boolean gui = true;
     private boolean burn = false;
+    private boolean wHop = false;
     public JWindow(MainClass main) {
         this.ctx = main;
         initComponents();
@@ -135,6 +136,9 @@ public class JWindow extends JFrame {
     public boolean getburn(){
         return burn;
     }
+    public boolean getwhop(){
+        return wHop;
+    }
     private void checkBox2ActionPerformed(ActionEvent e) {
         if(checkBox2.isSelected()){
             gui = true;
@@ -150,6 +154,13 @@ public class JWindow extends JFrame {
             burn = false;
         }
     }
+    private void checkBox4ActionPerformed(ActionEvent e) {
+        if(checkBox4.isSelected()){
+            wHop = true;
+        }else{
+            wHop = false;
+        }
+    }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - hfghfgh
@@ -161,6 +172,7 @@ public class JWindow extends JFrame {
         checkBox1 = new JCheckBox();
         checkBox2 = new JCheckBox();
         checkBox3 = new JCheckBox();
+        checkBox4 = new JCheckBox();
 
         //======== this ========
         setTitle("Mogy WoodCutter");
@@ -216,6 +228,11 @@ public class JWindow extends JFrame {
         checkBox3.addActionListener(e -> checkBox3ActionPerformed(e));
         contentPane.add(checkBox3);
         checkBox3.setBounds(new Rectangle(new Point(115, 125), checkBox3.getPreferredSize()));
+        //---- checkBox4 ----
+        checkBox4.setText("Disable World-Hop");
+        checkBox4.addActionListener(e -> checkBox4ActionPerformed(e));
+        contentPane.add(checkBox4);
+        checkBox4.setBounds(new Rectangle(new Point(115, 150), checkBox4.getPreferredSize()));
 
         contentPane.setPreferredSize(new Dimension(285, 330));
         pack();
@@ -233,5 +250,6 @@ public class JWindow extends JFrame {
     private JCheckBox checkBox1;
     private JCheckBox checkBox2;
     private JCheckBox checkBox3;
+    private JCheckBox checkBox4;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
