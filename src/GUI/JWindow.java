@@ -136,6 +136,9 @@ public class JWindow extends JFrame {
     public boolean getburn(){
         return burn;
     }
+    public int getAreaSize(){
+        return Integer.parseInt(textbox1.getText());
+    }
     public boolean getwhop(){
         return wHop;
     }
@@ -173,7 +176,8 @@ public class JWindow extends JFrame {
         checkBox2 = new JCheckBox();
         checkBox3 = new JCheckBox();
         checkBox4 = new JCheckBox();
-
+        textbox1 = new JTextField();
+        label3 = new JLabel();
         //======== this ========
         setTitle("Mogy WoodCutter");
         setBackground(Color.black);
@@ -208,7 +212,7 @@ public class JWindow extends JFrame {
         button1.setText("Start");
         button1.addActionListener(e -> button1ActionPerformed(e));
         contentPane.add(button1);
-        button1.setBounds(65, 215, 170, button1.getPreferredSize().height);
+        button1.setBounds(65, 225, 170, button1.getPreferredSize().height);
 
         //---- checkBox1 ----
         checkBox1.setText("Debug");
@@ -221,18 +225,26 @@ public class JWindow extends JFrame {
         checkBox2.setSelected(true);
         checkBox2.addActionListener(e -> checkBox2ActionPerformed(e));
         contentPane.add(checkBox2);
-        checkBox2.setBounds(115, 180, 65, checkBox2.getPreferredSize().height);
+        checkBox2.setBounds(115, 200, 65, checkBox2.getPreferredSize().height);
 
         //---- checkBox3 ----
         checkBox3.setText("Burn logs");
         checkBox3.addActionListener(e -> checkBox3ActionPerformed(e));
         contentPane.add(checkBox3);
-        checkBox3.setBounds(new Rectangle(new Point(115, 125), checkBox3.getPreferredSize()));
+        checkBox3.setBounds(new Rectangle(new Point(115, 145), checkBox3.getPreferredSize()));
         //---- checkBox4 ----
         checkBox4.setText("Disable World-Hop");
         checkBox4.addActionListener(e -> checkBox4ActionPerformed(e));
         contentPane.add(checkBox4);
-        checkBox4.setBounds(new Rectangle(new Point(115, 150), checkBox4.getPreferredSize()));
+        checkBox4.setBounds(new Rectangle(new Point(115, 170), checkBox4.getPreferredSize()));
+        //---- textbox1 ----
+        textbox1.setText("8");
+        contentPane.add(textbox1);
+        textbox1.setBounds(115, 115, 50, button1.getPreferredSize().height);
+        //---- label2 ----
+        label2.setText("Area Size");
+        contentPane.add(label2);
+        label2.setBounds(50, 120, label2.getPreferredSize().width, 15);
 
         contentPane.setPreferredSize(new Dimension(285, 330));
         pack();
@@ -251,5 +263,7 @@ public class JWindow extends JFrame {
     private JCheckBox checkBox2;
     private JCheckBox checkBox3;
     private JCheckBox checkBox4;
+    private JTextField textbox1;
+    private JLabel label3;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

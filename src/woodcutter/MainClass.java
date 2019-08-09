@@ -22,7 +22,7 @@ import org.dreambot.api.methods.map.Tile;
 
 import javax.imageio.ImageIO;
 
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 1.9)
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.0)
 
 public class MainClass extends AbstractScript {
     private GUI.JWindow window;
@@ -36,13 +36,14 @@ public class MainClass extends AbstractScript {
     private String dot = "...";
     private int i = 0;
     private long second2;
+    private boolean lighting;
     private int playerpossitionX;
     private int playerpossitionY;
-    private boolean burnarea;
     private String thought = "";
     private Polygon TreePolygon;
     private Polygon PlayerPolygon;
     private int y = 0;
+    private  boolean starting = true;
     private Image mainpaint = getImage("https://i.imgur.com/kZPF0p5.png");
     Area EastVarrokbank = new Area(3250,3422,3256,3420);
     Area WestVarrokbank = new Area(3181,3442,3185,3435);
@@ -52,7 +53,7 @@ public class MainClass extends AbstractScript {
     Area FaladorEastbank = new Area(3009, 3358, 3019, 3355);
     Area DuelArenaBank = new Area(3379, 3266, 3384, 3272);
     Area RimmingtonShop = new Area(2947, 3217, 2950, 3212);
-    private int range = 20;
+    private int range = 5;
 
     Area Selectedarea = new Area();
     Area currentArea = new Area();
@@ -76,9 +77,20 @@ public class MainClass extends AbstractScript {
         if(message.getMessage().contains("You get some")){
             logcuts++;
         }
-        if(message.getMessage().contains("You can't light a fire here")){
-            getWalking().walk(Selectedarea.getRandomTile());
-            burnarea = true;
+        if(message.getMessage().contains("Hi!!!")){
+            getWidgets().getWidget(548).getChild(43).interact();
+            getWidgets().getWidget(548).getChild(79).interact();
+            getKeyboard().type("Hi master!!!");
+        }
+        if(message.getMessage().contains("Hi")){
+            getKeyboard().type("Hi");
+        }
+        if(message.getMessage().contains("Bot?")){
+            getKeyboard().type("no");
+        }
+        if(message.getMessage().contains("You can't light a fire here.")){
+            thought= "I can't light a fire here!!";
+            lighting = false;
         }
         if(message.getMessage().contains("I can't reach that!")){
 
@@ -107,14 +119,23 @@ public class MainClass extends AbstractScript {
 
         }
         if(window.getcheckbox1()){
+            graphics.setColor(Color.white);
+            if(!starting){
+                Tile[] currentareatiles = currentArea.getTiles();
+                for (int i = 0; i < currentArea.getTiles().length-1; i++){
+                    graphics.drawPolygon(getMap().getPolygon(currentareatiles[i]));
+                }
+            }
+            graphics.setColor(Color.RED);
             graphics.drawString("Closest tree: " + treeCloses,10,100);
             graphics.drawString("Thought: " + thought,10,120);
             graphics.drawString("Closest bank: " + getBank().getClosestBankLocation(),10,140);
             graphics.drawString("Tree type: " + window.getTreetype(),10,160);
+
             graphics.setColor(Color.cyan);
             graphics.drawPolygon(TreePolygon);
             graphics.setColor(Color.yellow);
-            graphics.drawPolygon(PlayerPolygon);
+            graphics.drawPolygon(getMap().getPolygon(getPlayers().localPlayer().getTile()));
         }
     }
 
@@ -128,6 +149,11 @@ public class MainClass extends AbstractScript {
     @Override
     public int onLoop() {
         if(starter) {
+            if(starting){
+                range = window.getAreaSize();
+                currentArea = new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range);
+                starting= false;
+            }
             switch (window.getTreetype()) {
                 case "Tree":
                     switch (window.getAreaLocation()){
@@ -275,6 +301,7 @@ public class MainClass extends AbstractScript {
         if(window.getcheckbox1()){
             debug();
         }
+        //log();
         antiBan();
         return ((int) (Math.random() * 20));
     }
@@ -383,7 +410,8 @@ public class MainClass extends AbstractScript {
         }else{
             TreePolygon = getGameObjects().closest(checktreeType()).getTile().getPolygon();
         }
-        PlayerPolygon = getLocalPlayer().getTile().getPolygon();
+        //PlayerPolygon = getLocalPlayer().getTile().getPolygon();
+
     }
     private String checktreeType(){
         String[] trees = {"Dying tree", "Evergreen", "Jungle tree", "Dead tree", "Tree"};
@@ -489,18 +517,24 @@ public class MainClass extends AbstractScript {
     }
     private void burnlogs(String logname){
         thought = "i hope, i find Bernie!";
+        lighting = true;
         while(getInventory().contains(logname)){
+            log(logname);
             if(getLocalPlayer().isAnimating()){
+                thought="Light up now!!!";
                 sleep(1500, 3000);
-            }else if(burnarea && getPlayers().localPlayer().isMoving()){
-                sleep(200);
-                burnarea = false;
+            }else if(getPlayers().localPlayer().isMoving()){
+                thought="Moving...";
+                sleep(200,300);
+            }else if(!lighting){
+                getWalking().walk(currentArea.getRandomTile());
+                sleep(200,300);
+                lighting = true;
             }else{
-                if (getInventory().contains(logname)){
-                    getInventory().interact("Tinderbox", "Use");
-                    getInventory().interact(logname, "Use");
-                    sleep(1500, 3000);
-                }
+                thought="Burning...";
+                getInventory().interact("Tinderbox", "Use");
+                getInventory().interact(logname, "Use");
+                sleep(1500, 3000);
             }
         }
     }
