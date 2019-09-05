@@ -22,10 +22,11 @@ import org.dreambot.api.methods.map.Tile;
 
 import javax.imageio.ImageIO;
 
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.0)
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.1)
 
 public class MainClass extends AbstractScript {
     private GUI.JWindow window;
+    private Time time;
     private boolean starter = false;
     private int logcuts = 0;
     private long startTime;
@@ -40,9 +41,7 @@ public class MainClass extends AbstractScript {
     private int playerpossitionX;
     private int playerpossitionY;
     private String thought = "";
-    private Polygon TreePolygon;
-    private Polygon PlayerPolygon;
-    private int y = 0;
+    private Tile TreeTile;
     private  boolean starting = true;
     private Image mainpaint = getImage("https://i.imgur.com/kZPF0p5.png");
     Area EastVarrokbank = new Area(3250,3422,3256,3420);
@@ -61,6 +60,7 @@ public class MainClass extends AbstractScript {
     public void onStart(){
         window = new GUI.JWindow(this);
         window.setVisible(true);
+        time = new Time();
         Startedlevelup = getSkills().getRealLevel(Skill.WOODCUTTING);
         log("MOGY's Woodcutter Full version");
         log("Starting...");
@@ -111,9 +111,9 @@ public class MainClass extends AbstractScript {
             graphics.setColor(Color.green);
 
             graphics.drawString("Logs Cut: " + logcuts, 10, 359);
-            graphics.drawString("Time running: " + eclapsedtime(), 10, 389);
+            graphics.drawString("Time running: " + time.eclapsedtime(startTime), 10, 389);
             graphics.drawString("Woodcutting level: " + getSkills().getRealLevel(Skill.WOODCUTTING) + " (" + (getSkills().getRealLevel(Skill.WOODCUTTING) - Startedlevelup) + ")", 10, 415);
-            graphics.drawString("Logs/hour: " + logcuts * (int) (3600D / eclapsedsec()), 10, 440);
+            graphics.drawString("Logs/hour: " + logcuts * (int) (3600D / time.eclapsedsec(startTime)), 10, 440);
             graphics.drawString(activity + dot(), 245, 472);
 
 
@@ -133,7 +133,7 @@ public class MainClass extends AbstractScript {
             graphics.drawString("Tree type: " + window.getTreetype(),10,160);
 
             graphics.setColor(Color.cyan);
-            graphics.drawPolygon(TreePolygon);
+            graphics.drawPolygon(TreeTile.getPolygon());
             graphics.setColor(Color.yellow);
             graphics.drawPolygon(getMap().getPolygon(getPlayers().localPlayer().getTile()));
         }
@@ -154,160 +154,164 @@ public class MainClass extends AbstractScript {
                 currentArea = new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range);
                 starting= false;
             }
-            switch (window.getTreetype()) {
-                case "Tree":
-                    switch (window.getAreaLocation()){
-                        case "GrandExchange":
-                            remoteBankcutter(GrandExchangeBank, window.getTreetype());
-                            break;
-                        case "East-Varrock":
-                            MultiCutter(EastVarrokbank, new Area(3264,3485,3284,3446), window.getTreetype(), "Logs");
-                            break;
-                        case "Draynor village":
-                            remoteBankcutter(DraynorBank, window.getTreetype());
-                            break;
-                        case "West-Varrock":
-                            remoteBankcutter(WestVarrokbank, window.getTreetype());
-                            break;
-                        case "Current area":
-                            MultiTypeCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), "Logs");
-                            //RemoteCutter(new Area(getLocalPlayer().getX() - range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
-                            break;
-                    }
-                    break;
-                case "Oak":
-                    switch (window.getAreaLocation()){
-                        case "GrandExchange":
-                            MultiCutter(GrandExchangeBank, new Area(3189,3467,3197,3458), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "East-Varrock":
-                            MultiCutter(EastVarrokbank, new Area(3274,3438,3285,3414), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "South-Varrock":
-                            MultiCutter(EastVarrokbank, new Area(3200,3373,3217,3358), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "South-Falador":
-                            MultiCutter(FaladorEastbank, new Area(2999,3318,3013,3298), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "Draynor village":
-                            remoteBankcutter(DraynorBank, window.getTreetype());
-                            break;
-                        case "West-Varrock":
-                            remoteBankcutter(WestVarrokbank, window.getTreetype());
-                            break;
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            //RemoteCutter(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
-                            break;
-                    }
-                case "Willow":
-                    switch (window.getAreaLocation()){
-                        case "West-Draynor":
-                            MultiCutter(DraynorBank, new Area(3056,3256,3064,3251), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "East-Draynor":
-                            MultiCutter(DraynorBank, new Area(3158,3277,3183,3260), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "South-Rimmington":
-                            MultiCutter(FaladorEastbank, new Area(2957,3201,2975,3191), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "North-Lumbridge":
-                            //RemoteCutter(new Area(3219,3311,3224,3297),window.getTreetype());
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), new Area(3219,3311,3224,3297), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            //RemoteCutter(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
-                            break;
-
-                    }
-                case "Yew":
-                    switch (window.getAreaLocation()){
-                        case "EdgeVillage":
-                            MultiCutter(Edgevillagebank,  new Area(3085,3479,3091,3468), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "Exchange":
-                            MultiCutter(GrandExchangeBank,  new Area(3201,3506,3224,3498), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "East-Varrock":
-                            MultiCutter(EastVarrokbank,  new Area(3280,3471,3287,3465), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "West-Draynor":
-                            remoteBankcutter(DraynorBank, window.getTreetype());
-                            break;
-                        case "Falador":
-                            remoteBankcutter(FaladorEastbank, window.getTreetype());
-                            break;
-                        case "Lumbridge":
-                            MultiCutter(EastVarrokbank,  new Area(3134,3265,3141,3226), window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Magic tree":
-                    switch (window.getAreaLocation()) {
-                        case "Mage Training Area":
-                            MultiCutter(DuelArenaBank,new Area(3353,3293,3373,3360), window.getTreetype(), "Magic logs");
-                            break;
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Achey tree":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Teak tree":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Maple tree":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Arctic pine":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Hollow tree":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Mahogany tree":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-                case "Redwood tree":
-                    switch (window.getAreaLocation()) {
-                        case "Current area":
-                            MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
-                            break;
-                    }
-            }
+            SelectedArea();
         }
         if(window.getcheckbox1()){
             debug();
         }
-        //log();
-        antiBan();
+        random_AntiBan();
+
         return ((int) (Math.random() * 20));
     }
 
     //Execute order 66
+    private void SelectedArea(){
+        switch (window.getTreetype()) {
+            case "Tree":
+                switch (window.getAreaLocation()){
+                    case "GrandExchange":
+                        remoteBankcutter(GrandExchangeBank, window.getTreetype());
+                        break;
+                    case "East-Varrock":
+                        MultiCutter(EastVarrokbank, new Area(3264,3485,3284,3446), window.getTreetype(), "Logs");
+                        break;
+                    case "Draynor village":
+                        remoteBankcutter(DraynorBank, window.getTreetype());
+                        break;
+                    case "West-Varrock":
+                        remoteBankcutter(WestVarrokbank, window.getTreetype());
+                        break;
+                    case "Current area":
+                        MultiTypeCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), "Logs");
+                        //RemoteCutter(new Area(getLocalPlayer().getX() - range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
+                        break;
+                }
+                break;
+            case "Oak":
+                switch (window.getAreaLocation()){
+                    case "GrandExchange":
+                        MultiCutter(GrandExchangeBank, new Area(3189,3467,3197,3458), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "East-Varrock":
+                        MultiCutter(EastVarrokbank, new Area(3274,3438,3285,3414), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "South-Varrock":
+                        MultiCutter(EastVarrokbank, new Area(3200,3373,3217,3358), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "South-Falador":
+                        MultiCutter(FaladorEastbank, new Area(2999,3318,3013,3298), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "Draynor village":
+                        remoteBankcutter(DraynorBank, window.getTreetype());
+                        break;
+                    case "West-Varrock":
+                        remoteBankcutter(WestVarrokbank, window.getTreetype());
+                        break;
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        //RemoteCutter(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
+                        break;
+                }
+            case "Willow":
+                switch (window.getAreaLocation()){
+                    case "West-Draynor":
+                        MultiCutter(DraynorBank, new Area(3056,3256,3064,3251), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "East-Draynor":
+                        MultiCutter(DraynorBank, new Area(3158,3277,3183,3260), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "South-Rimmington":
+                        MultiCutter(FaladorEastbank, new Area(2957,3201,2975,3191), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "North-Lumbridge":
+                        //RemoteCutter(new Area(3219,3311,3224,3297),window.getTreetype());
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), new Area(3219,3311,3224,3297), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        //RemoteCutter(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
+                        break;
+
+                }
+            case "Yew":
+                switch (window.getAreaLocation()){
+                    case "EdgeVillage":
+                        MultiCutter(Edgevillagebank,  new Area(3085,3479,3091,3468), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "Exchange":
+                        MultiCutter(GrandExchangeBank,  new Area(3201,3506,3224,3498), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "East-Varrock":
+                        MultiCutter(EastVarrokbank,  new Area(3263,3468,3276,3506), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "West-Draynor":
+                        remoteBankcutter(DraynorBank, window.getTreetype());
+                        break;
+                    case "Falador":
+                        remoteBankcutter(FaladorEastbank, window.getTreetype());
+                        break;
+                    case "Lumbridge":
+                        MultiCutter(EastVarrokbank,  new Area(3134,3265,3141,3226), window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Magic tree":
+                switch (window.getAreaLocation()) {
+                    case "Mage Training Area":
+                        MultiCutter(DuelArenaBank,new Area(3353,3293,3373,3360), window.getTreetype(), "Magic logs");
+                        break;
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Achey tree":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Teak tree":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Maple tree":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Arctic pine":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Hollow tree":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Mahogany tree":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+            case "Redwood tree":
+                switch (window.getAreaLocation()) {
+                    case "Current area":
+                        MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
+                        break;
+                }
+        }
+    }
     private void MultiCutter(Area bank_area, Area Selected_area, String tree_type, String logs_type){
+            currentArea = Selected_area;
             if(getInventory().isFull()){
             if(window.getburn() && checktinderbox()){
                 activity = "Burn logs";
@@ -319,7 +323,7 @@ public class MainClass extends AbstractScript {
             }else{
                 walkingtoarea(bank_area);
                 if (bank_area.contains(getLocalPlayer())) {
-                    banking(logs_type);
+                    banking();
                 }
             }
             sleep(500, 1000);
@@ -334,7 +338,7 @@ public class MainClass extends AbstractScript {
                     }
                 }
             }else{
-                walkingtoarea(Selected_area);
+                walkingtoarea(Selected_area.getCenter().getArea(2));
             }
         }
     }
@@ -349,7 +353,7 @@ public class MainClass extends AbstractScript {
             }else{
                 walkingtoarea(bank_area);
                 if (bank_area.contains(getLocalPlayer())) {
-                    banking(logs_type);
+                    banking();
                 }
             }
             sleep(500, 1000);
@@ -380,7 +384,7 @@ public class MainClass extends AbstractScript {
             }else {
                 walkingtoarea(bank);
                 if (bank.contains(getLocalPlayer())) {
-                    banking(treetype + " logs");
+                    banking();
                 }
             }
             sleep(500, 1500);
@@ -391,7 +395,6 @@ public class MainClass extends AbstractScript {
                 }else{
                     if(chopping(treetype)){
                         Selectedarea = new Area(getLocalPlayer().getX() -100,getLocalPlayer().getY() -100,getLocalPlayer().getX() +100,getLocalPlayer().getY()+100);
-
                         chop(treetype);
                         sleep(300, 1000);
                     }
@@ -403,14 +406,89 @@ public class MainClass extends AbstractScript {
 
     }
     //DOITANAKIN
+    public void setActivity(String data){
+        activity = data;
+    }
+    public void setThought(String data){
+        thought = data;
+    }
+    public GUI.JWindow getWindow(){
+        return window;
+    }
+    public void random_AntiBan() {
+
+        Random srand = new Random();
+        double chances = srand.nextDouble();
+        double chances2 = srand.nextDouble();
+        if (chances < 0.096) {
+            log("Anti-ban: Changing Camera angle");
+            setActivity("Anti-ban: Changing Camera angle");
+            getCamera().rotateToEvent(srand.nextInt() + 360, srand.nextInt() + 90);
+        }else if(chances > 0.096 && chances < 0.192){
+            setThought("hmm...");
+            log("Anti-ban: Changing mouse position");
+            setActivity("Anti-ban: Changing mouse position");
+            getMouse().move();
+        }else if(chances > 0.192 && chances < 0.194){
+            setThought("Zzz...");
+            log("Anti-ban: Random sleep");
+            setActivity("Anti-ban: Random sleeping");
+            sleep(10000, 50000);
+        }
+        else if(chances > 0.200 && chances < 0.256){
+            setThought("Check XP...");
+            log("Anti-ban: Checking skill XP");
+            setActivity("Anti-ban: Checking skill XP");
+            getSkills().open();
+            sleep(100, 500);
+            getSkills().hoverSkill(Skill.WOODCUTTING);
+            sleep(1000, 1500);
+            getKeyboard().typeSpecialKey(1);
+
+        }else if(chances > 0.296 && chances < 0.350){
+            setThought("This music is not good...");
+            setActivity("Anti-ban: Move cursor Outside Screen");
+            log("Anti-ban: Move cursor Outside Screen");
+            getMouse().moveMouseOutsideScreen();
+            sleep(2888, 5111);
+            getMouse().isMouseInScreen();
+        }else if(chances > 0.350 && chances < 0.395){
+            setThought("What is this?");
+            if(chances2 < 0.2){
+                getWidgets().getWidget(548).getChild(61).interact();
+            } else if(chances2 > 0.2 && chances2 < 0.4){
+                getWidgets().getWidget(548).getChild(43).interact();
+            } else{
+                getWidgets().getWidget(548).getChild(40).interact();
+            }
+            setActivity("Anti-ban: Open Random tab");
+            log("Anti-ban: Open Random tab");
+            sleep(200, 500);
+        }else if(chances > 0.395 && chances < 0.400){
+            if(!getWindow().getwhop()) {
+                setThought("I don't like this world!");
+                setActivity("Anti-ban: Hop world");
+                log("Anti-ban: Hop world");
+                if (!getClient().isMembers()) {
+                    getWorldHopper().hopWorld(getWorlds().f2p().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
+                    getWorldHopper().isWorldHopperOpen();
+                    sleep(5000, 7000);
+                } else {
+                    getWorldHopper().hopWorld(getWorlds().members().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
+                    getWorldHopper().isWorldHopperOpen();
+                    sleep(5000, 7000);
+                }
+            }
+        }
+    }
     private void debug(){
         treeCloses = "X: " + getGameObjects().closest(window.getTreetype()).getX() + ", Y: " + getGameObjects().closest(window.getTreetype()).getY();
         if(!window.getTreetype().equals("Tree")){
-            TreePolygon = getGameObjects().closest(window.getTreetype()).getTile().getPolygon();
+            TreeTile = getGameObjects().closest(window.getTreetype()).getTile();
         }else{
-            TreePolygon = getGameObjects().closest(checktreeType()).getTile().getPolygon();
+            TreeTile = getGameObjects().closest(checktreeType()).getTile();
         }
-        //PlayerPolygon = getLocalPlayer().getTile().getPolygon();
+
 
     }
     private String checktreeType(){
@@ -443,7 +521,7 @@ public class MainClass extends AbstractScript {
         String[] axes = {"Infernal axe", "3rd age axe", "Dragon axe", "Rune axe", "Adamant axe", "Mithril axe", "Black axe", "Blessed axe", "Steel axe", "Iron axe", "Bronze axe"};
         for(int i = 0; i < axes.length; i++) {
             if (getInventory().contains(axes[i])){
-                thought = axes[i] + " is exist!";
+                setThought(axes[i] + " is exist!");
                 return axes[i];
             }
         }
@@ -538,7 +616,7 @@ public class MainClass extends AbstractScript {
             }
         }
     }
-    private void banking(String logname){
+    private void banking(){
             activity = "Banking";
             thought = "take care of it!";
             NPC banker = getNpcs().closest(npc -> npc != null && npc.hasAction("Bank"));
@@ -550,7 +628,7 @@ public class MainClass extends AbstractScript {
                 }
             }
     }
-    /*private void selling(String logname){
+    private void selling(String logname){
         activity = "Selling";
         NPC shopper = getNpcs().closest(npc -> npc != null && npc.hasAction("Trade"));
         if(shopper.interact("Trade")){
@@ -563,85 +641,8 @@ public class MainClass extends AbstractScript {
                 sleep(500, 3000);
             }
         }
-    }*/
-    private void antiBan() {
-        Random srand = new Random();
-        double chances = srand.nextDouble();
-        double chances2 = srand.nextDouble();
-        if (chances < 0.096) {
-            log("Anti-ban: Changing Camera angle");
-            activity ="Anti-ban: Changing Camera angle";
-            getCamera().rotateToEvent(srand.nextInt() + 360, srand.nextInt() + 90);
-        }else if(chances > 0.096 && chances < 0.192){
-            thought = "hmm...";
-            log("Anti-ban: Changing mouse position");
-            activity ="Anti-ban: Changing mouse position";
-            getMouse().move();
-        }else if(chances > 0.192 && chances < 0.194){
-            thought = "Zzz...";
-            log("Anti-ban: Random sleep");
-            activity = "Anti-ban: Random sleeping";
-            sleep(10000, 50000);
-        }
-        else if(chances > 0.200 && chances < 0.256){
-            thought = "Check XP...";
-            log("Anti-ban: Checking skill XP");
-            activity = "Anti-ban: Checking skill XP";
-            getSkills().open();
-            sleep(100, 500);
-            getSkills().hoverSkill(Skill.WOODCUTTING);
-            sleep(1000, 1500);
-            getKeyboard().typeSpecialKey(1);
+    }
 
-        }else if(chances > 0.296 && chances < 0.350){
-            thought = "This music is not good...";
-            activity = "Anti-ban: Move cursor Outside Screen";
-            log("Anti-ban: Move cursor Outside Screen");
-            getMouse().moveMouseOutsideScreen();
-            sleep(2888, 5111);
-            getMouse().isMouseInScreen();
-        }else if(chances > 0.350 && chances < 0.395){
-            thought = "What is this?";
-            if(chances2 < 0.2){
-                getWidgets().getWidget(548).getChild(61).interact();
-            } else if(chances2 > 0.2 && chances2 < 0.4){
-                getWidgets().getWidget(548).getChild(43).interact();
-            } else{
-                getWidgets().getWidget(548).getChild(40).interact();
-            }
-            activity = "Anti-ban: Open Random tab";
-            log("Anti-ban: Open Random tab");
-            sleep(200, 500);
-        }else if(chances > 0.395 && chances < 0.400){
-            if(!window.getwhop()) {
-                thought = "I don't like this world!";
-                activity = "Anti-ban: Hop world";
-                log("Anti-ban: Hop world");
-                if (!getClient().isMembers()) {
-                    //int[] freeworld = {301, 308, 316, 326, 335, 371, 379, 380, 381, 382, 383, 384, 385, 393, 394, 397, 398, 399, 413, 414, 418, 419, 425, 426, 427, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 451, 452, 453, 454, 455, 456, 457, 458, 459, 469, 470, 471, 472, 473, 474, 475, 476, 477, 497, 498, 499, 500, 501, 502, 503, 504};
-                    //getWorldHopper().hopWorld((freeworld[srand.nextInt(freeworld.length)]) - 300, getWorldHopper().openWorldHopper());
-                    getWorldHopper().hopWorld(getWorlds().f2p().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
-                    getWorldHopper().isWorldHopperOpen();
-                    sleep(5000, 7000);
-                } else {
-                    getWorldHopper().hopWorld(getWorlds().members().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
-                    getWorldHopper().isWorldHopperOpen();
-                    sleep(5000, 7000);
-                }
-            }
-        }
-    }
-    private String eclapsedtime(){
-        long elapsed;
-        elapsed = ((System.currentTimeMillis() - startTime) / 1000);
-
-        return String.format("%02d:%02d:%02d", elapsed / 3600, (elapsed % 3600) / 60, (elapsed % 60));
-    }
-    private long eclapsedsec(){
-        long elapsed;
-        elapsed = ((System.currentTimeMillis() - startTime) / 1000);
-        return elapsed;
-    }
     public void setStarter(boolean starter) {
         this.starter = starter;
     }
