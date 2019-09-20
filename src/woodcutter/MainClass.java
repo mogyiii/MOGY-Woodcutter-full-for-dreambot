@@ -22,15 +22,19 @@ import org.dreambot.api.methods.map.Tile;
 
 import javax.imageio.ImageIO;
 
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.1)
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.2)
 
 public class MainClass extends AbstractScript {
     private GUI.JWindow window;
     private Time time;
     private boolean starter = false;
     private int logcuts = 0;
+    private int burned_logs = 0;
     private long startTime;
     private int Startedlevelup;
+    private int FiremakingStartedlevelup;
+    private int current_woodcutting_xp;
+    private int current_firemaking_xp;
     private String activity;
     private String treeCloses = "";
     private boolean first = true;
@@ -44,6 +48,7 @@ public class MainClass extends AbstractScript {
     private Tile TreeTile;
     private  boolean starting = true;
     private Image mainpaint = getImage("https://i.imgur.com/kZPF0p5.png");
+    private Image firemakingpaint = getImage("https://i.imgur.com/PRzTXKg.png");
     Area EastVarrokbank = new Area(3250,3422,3256,3420);
     Area WestVarrokbank = new Area(3181,3442,3185,3435);
     Area GrandExchangeBank = new Area(3160, 3493, 3168, 3483);
@@ -61,7 +66,10 @@ public class MainClass extends AbstractScript {
         window = new GUI.JWindow(this);
         window.setVisible(true);
         time = new Time();
+        current_woodcutting_xp = getSkills().getExperience(Skill.WOODCUTTING);
+        current_firemaking_xp = getSkills().getExperience(Skill.FIREMAKING);
         Startedlevelup = getSkills().getRealLevel(Skill.WOODCUTTING);
+        FiremakingStartedlevelup = getSkills().getRealLevel(Skill.FIREMAKING);
         log("MOGY's Woodcutter Full version");
         log("Starting...");
         activity = "Starting";
@@ -76,6 +84,9 @@ public class MainClass extends AbstractScript {
     public void onMessage(Message message) {
         if(message.getMessage().contains("You get some")){
             logcuts++;
+        }
+        if(message.getMessage().contains("The fire catches")){
+            burned_logs++;
         }
         if(message.getMessage().contains("Hi!!!")){
             getWidgets().getWidget(548).getChild(43).interact();
@@ -114,9 +125,15 @@ public class MainClass extends AbstractScript {
             graphics.drawString("Time running: " + time.eclapsedtime(startTime), 10, 389);
             graphics.drawString("Woodcutting level: " + getSkills().getRealLevel(Skill.WOODCUTTING) + " (" + (getSkills().getRealLevel(Skill.WOODCUTTING) - Startedlevelup) + ")", 10, 415);
             graphics.drawString("Logs/hour: " + logcuts * (int) (3600D / time.eclapsedsec(startTime)), 10, 440);
+            graphics.drawString("Xp Gained: " + (getSkills().getExperience(Skill.WOODCUTTING) - current_woodcutting_xp), 10, 460);
             graphics.drawString(activity + dot(), 245, 472);
-
-
+            if(window.getburn()){
+                graphics.drawImage(firemakingpaint, 285, 200, null);
+                graphics.setColor(Color.orange);
+                graphics.drawString("Burned logs: " + burned_logs, 350, 250);
+                graphics.drawString("Firemaking level: " + getSkills().getRealLevel(Skill.FIREMAKING) + " (" + (getSkills().getRealLevel(Skill.FIREMAKING) - FiremakingStartedlevelup) + ")", 360, 270);
+                graphics.drawString("Xp Gained: " + ( getSkills().getExperience(Skill.FIREMAKING) - current_firemaking_xp), 370, 290);
+            }
         }
         if(window.getcheckbox1()){
             graphics.setColor(Color.white);
@@ -170,19 +187,19 @@ public class MainClass extends AbstractScript {
             case "Tree":
                 switch (window.getAreaLocation()){
                     case "GrandExchange":
-                        remoteBankcutter(GrandExchangeBank, window.getTreetype());
+                        remoteBankcutter(GrandExchangeBank);
                         break;
                     case "East-Varrock":
                         MultiCutter(EastVarrokbank, new Area(3264,3485,3284,3446), window.getTreetype(), "Logs");
                         break;
                     case "Draynor village":
-                        remoteBankcutter(DraynorBank, window.getTreetype());
+                        remoteBankcutter(DraynorBank);
                         break;
                     case "West-Varrock":
-                        remoteBankcutter(WestVarrokbank, window.getTreetype());
+                        remoteBankcutter(WestVarrokbank);
                         break;
                     case "Current area":
-                        MultiTypeCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), "Logs");
+                        MultiTypeCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, "Logs");
                         //RemoteCutter(new Area(getLocalPlayer().getX() - range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range),window.getTreetype());
                         break;
                 }
@@ -202,10 +219,10 @@ public class MainClass extends AbstractScript {
                         MultiCutter(FaladorEastbank, new Area(2999,3318,3013,3298), window.getTreetype(), window.getTreetype()+" logs");
                         break;
                     case "Draynor village":
-                        remoteBankcutter(DraynorBank, window.getTreetype());
+                        remoteBankcutter(DraynorBank);
                         break;
                     case "West-Varrock":
-                        remoteBankcutter(WestVarrokbank, window.getTreetype());
+                        remoteBankcutter(WestVarrokbank);
                         break;
                     case "Current area":
                         MultiCutter(getBank().getClosestBankLocation().getCenter().getArea(2), currentArea, window.getTreetype(), window.getTreetype()+" logs");
@@ -242,13 +259,13 @@ public class MainClass extends AbstractScript {
                         MultiCutter(GrandExchangeBank,  new Area(3201,3506,3224,3498), window.getTreetype(), window.getTreetype()+" logs");
                         break;
                     case "East-Varrock":
-                        MultiCutter(EastVarrokbank,  new Area(3263,3468,3276,3506), window.getTreetype(), window.getTreetype()+" logs");
+                        remoteBankcutter(EastVarrokbank);
                         break;
                     case "West-Draynor":
-                        remoteBankcutter(DraynorBank, window.getTreetype());
+                        remoteBankcutter(DraynorBank);
                         break;
                     case "Falador":
-                        remoteBankcutter(FaladorEastbank, window.getTreetype());
+                        remoteBankcutter(FaladorEastbank);
                         break;
                     case "Lumbridge":
                         MultiCutter(EastVarrokbank,  new Area(3134,3265,3141,3226), window.getTreetype(), window.getTreetype()+" logs");
@@ -342,7 +359,7 @@ public class MainClass extends AbstractScript {
             }
         }
     }
-    private void MultiTypeCutter(Area bank_area, Area Selected_area, String tree_type, String logs_type){
+    private void MultiTypeCutter(Area bank_area, Area Selected_area, String logs_type){
         if(getInventory().isFull()){
             if(window.getburn() && checktinderbox()){
                 activity = "Burn logs";
@@ -372,15 +389,21 @@ public class MainClass extends AbstractScript {
             }
         }
     }
-    private void remoteBankcutter(Area bank, String treetype){
+    private void remoteBankcutter(Area bank){
         if(first){
             Selectedarea = bank;
+
             first = false;
         }
+        currentArea = Selectedarea;
         if(getInventory().isFull()){
             if(window.getburn() && checktinderbox()){
                 activity = "Burn logs";
-                burnlogs("Logs");
+                if(window.getTreetype().contains("Tree")){
+                    burnlogs("Logs");
+                }else{
+                    burnlogs(window.getTreetype() + " logs");
+                }
             }else {
                 walkingtoarea(bank);
                 if (bank.contains(getLocalPlayer())) {
@@ -393,9 +416,9 @@ public class MainClass extends AbstractScript {
                 if(getLocalPlayer().isAnimating()){
                     cutting();
                 }else{
-                    if(chopping(treetype)){
-                        Selectedarea = new Area(getLocalPlayer().getX() -100,getLocalPlayer().getY() -100,getLocalPlayer().getX() +100,getLocalPlayer().getY()+100);
-                        chop(treetype);
+                    if(chopping(window.getTreetype())){
+                        Selectedarea = new Area(getGameObjects().closest(window.getTreetype()).getX() - 3,getGameObjects().closest(window.getTreetype()).getY() -3,getGameObjects().closest(window.getTreetype()).getX() +3,getGameObjects().closest(window.getTreetype()).getY()+3);
+                        chop(window.getTreetype());
                         sleep(300, 1000);
                     }
                 }
@@ -415,72 +438,7 @@ public class MainClass extends AbstractScript {
     public GUI.JWindow getWindow(){
         return window;
     }
-    public void random_AntiBan() {
 
-        Random srand = new Random();
-        double chances = srand.nextDouble();
-        double chances2 = srand.nextDouble();
-        if (chances < 0.096) {
-            log("Anti-ban: Changing Camera angle");
-            setActivity("Anti-ban: Changing Camera angle");
-            getCamera().rotateToEvent(srand.nextInt() + 360, srand.nextInt() + 90);
-        }else if(chances > 0.096 && chances < 0.192){
-            setThought("hmm...");
-            log("Anti-ban: Changing mouse position");
-            setActivity("Anti-ban: Changing mouse position");
-            getMouse().move();
-        }else if(chances > 0.192 && chances < 0.194){
-            setThought("Zzz...");
-            log("Anti-ban: Random sleep");
-            setActivity("Anti-ban: Random sleeping");
-            sleep(10000, 50000);
-        }
-        else if(chances > 0.200 && chances < 0.256){
-            setThought("Check XP...");
-            log("Anti-ban: Checking skill XP");
-            setActivity("Anti-ban: Checking skill XP");
-            getSkills().open();
-            sleep(100, 500);
-            getSkills().hoverSkill(Skill.WOODCUTTING);
-            sleep(1000, 1500);
-            getKeyboard().typeSpecialKey(1);
-
-        }else if(chances > 0.296 && chances < 0.350){
-            setThought("This music is not good...");
-            setActivity("Anti-ban: Move cursor Outside Screen");
-            log("Anti-ban: Move cursor Outside Screen");
-            getMouse().moveMouseOutsideScreen();
-            sleep(2888, 5111);
-            getMouse().isMouseInScreen();
-        }else if(chances > 0.350 && chances < 0.395){
-            setThought("What is this?");
-            if(chances2 < 0.2){
-                getWidgets().getWidget(548).getChild(61).interact();
-            } else if(chances2 > 0.2 && chances2 < 0.4){
-                getWidgets().getWidget(548).getChild(43).interact();
-            } else{
-                getWidgets().getWidget(548).getChild(40).interact();
-            }
-            setActivity("Anti-ban: Open Random tab");
-            log("Anti-ban: Open Random tab");
-            sleep(200, 500);
-        }else if(chances > 0.395 && chances < 0.400){
-            if(!getWindow().getwhop()) {
-                setThought("I don't like this world!");
-                setActivity("Anti-ban: Hop world");
-                log("Anti-ban: Hop world");
-                if (!getClient().isMembers()) {
-                    getWorldHopper().hopWorld(getWorlds().f2p().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
-                    getWorldHopper().isWorldHopperOpen();
-                    sleep(5000, 7000);
-                } else {
-                    getWorldHopper().hopWorld(getWorlds().members().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
-                    getWorldHopper().isWorldHopperOpen();
-                    sleep(5000, 7000);
-                }
-            }
-        }
-    }
     private void debug(){
         treeCloses = "X: " + getGameObjects().closest(window.getTreetype()).getX() + ", Y: " + getGameObjects().closest(window.getTreetype()).getY();
         if(!window.getTreetype().equals("Tree")){
@@ -642,7 +600,82 @@ public class MainClass extends AbstractScript {
             }
         }
     }
+    public void random_AntiBan() {
 
+        Random srand = new Random();
+        double chances = srand.nextDouble();
+        double chances2 = srand.nextDouble();
+        if (chances < 0.096) {
+            log("Anti-ban: Changing Camera angle");
+            setActivity("Anti-ban: Changing Camera angle");
+            getCamera().rotateToEvent(srand.nextInt() + 360, srand.nextInt() + 90);
+        }else if(chances > 0.096 && chances < 0.192){
+            setThought("hmm...");
+            log("Anti-ban: Changing mouse position");
+            setActivity("Anti-ban: Changing mouse position");
+            getMouse().move();
+        }else if(chances > 0.192 && chances < 0.194){
+            setThought("Zzz...");
+            log("Anti-ban: Random sleep");
+            setActivity("Anti-ban: Random sleeping");
+            sleep(10000, 50000);
+        }
+        else if(chances > 0.200 && chances < 0.256) {
+            setThought("Check XP...");
+            log("Anti-ban: Checking skill XP");
+            setActivity("Anti-ban: Checking skill XP");
+            getSkills().open();
+            sleep(100, 500);
+            getSkills().hoverSkill(Skill.WOODCUTTING);
+            sleep(1000, 1500);
+            getKeyboard().typeSpecialKey(1);
+        }
+        else if(chances > 0.257 && chances < 0.295){
+                setThought("Check XP...");
+                log("Anti-ban: Checking skill XP");
+                setActivity("Anti-ban: Checking skill XP");
+                getSkills().open();
+                sleep(100, 500);
+                getSkills().hoverSkill(Skill.FIREMAKING);
+                sleep(1000, 1500);
+                getKeyboard().typeSpecialKey(1);
+
+            }else if(chances > 0.296 && chances < 0.350){
+            setThought("This music is not good...");
+            setActivity("Anti-ban: Move cursor Outside Screen");
+            log("Anti-ban: Move cursor Outside Screen");
+            getMouse().moveMouseOutsideScreen();
+            sleep(2888, 5111);
+            getMouse().isMouseInScreen();
+        }else if(chances > 0.350 && chances < 0.395){
+            setThought("What is this?");
+            if(chances2 < 0.2){
+                getWidgets().getWidget(548).getChild(61).interact();
+            } else if(chances2 > 0.2 && chances2 < 0.4){
+                getWidgets().getWidget(548).getChild(43).interact();
+            } else{
+                getWidgets().getWidget(548).getChild(40).interact();
+            }
+            setActivity("Anti-ban: Open Random tab");
+            log("Anti-ban: Open Random tab");
+            sleep(200, 500);
+        }else if(chances > 0.395 && chances < 0.400){
+            if(!getWindow().getwhop()) {
+                setThought("I don't like this world!");
+                setActivity("Anti-ban: Hop world");
+                log("Anti-ban: Hop world");
+                if (!getClient().isMembers()) {
+                    getWorldHopper().hopWorld(getWorlds().f2p().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
+                    getWorldHopper().isWorldHopperOpen();
+                    sleep(5000, 7000);
+                } else {
+                    getWorldHopper().hopWorld(getWorlds().members().get(srand.nextInt(getWorlds().f2p().size())).getID(), getWorldHopper().openWorldHopper());
+                    getWorldHopper().isWorldHopperOpen();
+                    sleep(5000, 7000);
+                }
+            }
+        }
+    }
     public void setStarter(boolean starter) {
         this.starter = starter;
     }
