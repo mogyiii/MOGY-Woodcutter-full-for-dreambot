@@ -22,10 +22,11 @@ import org.dreambot.api.methods.map.Tile;
 
 import javax.imageio.ImageIO;
 
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.2)
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.3)
 
 public class MainClass extends AbstractScript {
     private GUI.JWindow window;
+    private SendPost Post;
     private Time time;
     private boolean starter = false;
     private int logcuts = 0;
@@ -65,11 +66,10 @@ public class MainClass extends AbstractScript {
     public void onStart(){
         window = new GUI.JWindow(this);
         window.setVisible(true);
+        Post = new SendPost();
+
         time = new Time();
-        current_woodcutting_xp = getSkills().getExperience(Skill.WOODCUTTING);
-        current_firemaking_xp = getSkills().getExperience(Skill.FIREMAKING);
-        Startedlevelup = getSkills().getRealLevel(Skill.WOODCUTTING);
-        FiremakingStartedlevelup = getSkills().getRealLevel(Skill.FIREMAKING);
+
         log("MOGY's Woodcutter Full version");
         log("Starting...");
         activity = "Starting";
@@ -170,6 +170,16 @@ public class MainClass extends AbstractScript {
                 range = window.getAreaSize();
                 currentArea = new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range);
                 starting= false;
+                current_woodcutting_xp = getSkills().getExperience(Skill.WOODCUTTING);
+                current_firemaking_xp = getSkills().getExperience(Skill.FIREMAKING);
+                Startedlevelup = getSkills().getRealLevel(Skill.WOODCUTTING);
+                FiremakingStartedlevelup = getSkills().getRealLevel(Skill.FIREMAKING);
+                try {
+                    log("Post request sending...");
+                    log(Post.sendpost("name=" + getPlayers().localPlayer().getName() + "&combat_lvl=" + getPlayers().localPlayer().getLevel() + "&current_world=" + getClient().getCurrentWorld() + "&bot_type_name=Woodcutting"));
+                } catch (Exception e) {
+                    log("Error: " + e.toString());
+                }
             }
             SelectedArea();
         }
