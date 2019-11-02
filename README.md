@@ -1,2 +1,2 @@
 # MOGY-Woodcutter-full-for-dreambot
-https://www.paypal.me/mogyiii
+Donate me: https://www.paypal.me/mogyiii
