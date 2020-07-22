@@ -14,120 +14,120 @@ import javax.swing.*;
  * @author Mogyiii
  */
 public class JWindow extends JFrame {
-    private woodcutter.MainClass ctx;
+    private woodcutter.MainClass main;
     private boolean debugger = false;
     private boolean gui = true;
     private boolean burn = false;
     private boolean wHop = false;
     public JWindow(MainClass main) {
-        this.ctx = main;
+        this.main = main;
         initComponents();
-        comboBox1.addItem("Achey tree");
-        comboBox1.addItem("Teak tree");
-        comboBox1.addItem("Maple tree");
-        comboBox1.addItem("Arctic pine");
-        comboBox1.addItem("Hollow tree");
-        comboBox1.addItem("Mahogany tree");
-        comboBox1.addItem("Magic tree");
-        comboBox1.addItem("Redwood tree");
+        TreeListBox.addItem("Achey tree");
+        TreeListBox.addItem("Teak tree");
+        TreeListBox.addItem("Maple tree");
+        TreeListBox.addItem("Arctic pine");
+        TreeListBox.addItem("Hollow tree");
+        TreeListBox.addItem("Mahogany tree");
+        TreeListBox.addItem("Magic tree");
+        TreeListBox.addItem("Redwood tree");
     }
 
-    private void button1ActionPerformed(ActionEvent e) {
-        ctx.setStarter(true);
+    private void StartButtonisClicked(ActionEvent e) {
+        main.setStarter(true);
         setVisible(false);
     }
 
-    private void comboBox1ActionPerformed(ActionEvent e) {
-        checkBox3.setEnabled(true);
+    private void TreeListBoxHasChange(ActionEvent e) {
+        BurnCheckBox.setEnabled(true);
         switch (getTreetype()){
             case "Tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("GrandExchange");
-                comboBox2.addItem("East-Varrock");
-                comboBox2.addItem("Draynor village");
-                comboBox2.addItem("West-Varrock");
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("GrandExchange");
+                AreaListBox.addItem("East-Varrock");
+                AreaListBox.addItem("Draynor village");
+                AreaListBox.addItem("West-Varrock");
+                AreaListBox.addItem("Current area");
                 break;
             case "Achey tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
             case "Oak":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("GrandExchange");
-                comboBox2.addItem("East-Varrock");
-                comboBox2.addItem("South-Varrock");
-                comboBox2.addItem("South-Falador");
-                comboBox2.addItem("Draynor village");
-                comboBox2.addItem("West-Varrock");
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("GrandExchange");
+                AreaListBox.addItem("East-Varrock");
+                AreaListBox.addItem("South-Varrock");
+                AreaListBox.addItem("South-Falador");
+                AreaListBox.addItem("Draynor village");
+                AreaListBox.addItem("West-Varrock");
+                AreaListBox.addItem("Current area");
                 break;
             case "Willow":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("West-Draynor");
-                comboBox2.addItem("South-Draynor");
-                comboBox2.addItem("East-Draynor");
-                comboBox2.addItem("South-Rimmington");
-                comboBox2.addItem("North-Lumbridge");
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("West-Draynor");
+                AreaListBox.addItem("South-Draynor");
+                AreaListBox.addItem("East-Draynor");
+                AreaListBox.addItem("South-Rimmington");
+                AreaListBox.addItem("North-Lumbridge");
+                AreaListBox.addItem("Current area");
                 break;
             case "Teak tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
             case "Maple tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
             case "Arctic pine":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
             case "Hollow tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
             case "Mahogany tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
             case "Yew":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("EdgeVillage");
-                comboBox2.addItem("Exchange");
-                comboBox2.addItem("East-Varrock");
-                comboBox2.addItem("West-Draynor");
-                comboBox2.addItem("Falador");
-                comboBox2.addItem("Lumbridge");
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("EdgeVillage");
+                AreaListBox.addItem("Exchange");
+                AreaListBox.addItem("East-Varrock");
+                AreaListBox.addItem("West-Draynor");
+                AreaListBox.addItem("Falador");
+                AreaListBox.addItem("Lumbridge");
+                AreaListBox.addItem("Current area");
                 break;
             case "Magic tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Mage Training Area");
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Mage Training Area");
+                AreaListBox.addItem("Current area");
                 break;
             case "Redwood tree":
-                comboBox2.removeAllItems();
-                comboBox2.addItem("Current area");
+                AreaListBox.removeAllItems();
+                AreaListBox.addItem("Current area");
                 break;
 
         }
     }
     public String getTreetype(){
-        return comboBox1.getSelectedItem().toString();
+        return TreeListBox.getSelectedItem().toString();
     }
     public String getAreaLocation(){
-        return comboBox2.getSelectedItem().toString();
+        return AreaListBox.getSelectedItem().toString();
     }
 
-    private void checkBox1ActionPerformed(ActionEvent e) {
-        if(checkBox1.isSelected()){
+    private void DebugCheckBoxisChanged(ActionEvent e) {
+        if(EnableDebugCheckBox.isSelected()){
             debugger = true;
         }else{
             debugger = false;
         }
     }
-    public boolean getcheckbox1(){
+    public boolean getisenableDebbuger(){
         return debugger;
     }
     public boolean getgui(){
@@ -137,47 +137,43 @@ public class JWindow extends JFrame {
         return burn;
     }
     public int getAreaSize(){
-        return Integer.parseInt(textbox1.getText());
+        return Integer.parseInt(AreaSizeTextBox.getText());
     }
     public boolean getwhop(){
         return wHop;
     }
-    private void checkBox2ActionPerformed(ActionEvent e) {
-        if(checkBox2.isSelected()){
+    private void GuiCheckBoxisChanged(ActionEvent e) {
+        if(EnableGuiCheckBox.isSelected()){
             gui = true;
         }else{
             gui = false;
         }
     }
-
-    private void checkBox3ActionPerformed(ActionEvent e) {
-        if(checkBox3.isSelected()){
+    private void BurnCheckBoxisChanged(ActionEvent e) {
+        if(BurnCheckBox.isSelected()){
             burn = true;
         }else{
             burn = false;
         }
     }
-    private void checkBox4ActionPerformed(ActionEvent e) {
-        if(checkBox4.isSelected()){
+    private void WorldHopCheckBoxisChanged(ActionEvent e) {
+        if(WorldHopCheckBox.isSelected()){
             wHop = true;
         }else{
             wHop = false;
         }
     }
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - hfghfgh
-        comboBox1 = new JComboBox<>();
-        label1 = new JLabel();
-        comboBox2 = new JComboBox();
-        label2 = new JLabel();
-        button1 = new JButton();
-        checkBox1 = new JCheckBox();
-        checkBox2 = new JCheckBox();
-        checkBox3 = new JCheckBox();
-        checkBox4 = new JCheckBox();
-        textbox1 = new JTextField();
-        label3 = new JLabel();
+        TreeListBox = new JComboBox<>();
+        TreeTypeText = new JLabel();
+        AreaListBox = new JComboBox();
+        AreaSizeText = new JLabel();
+        StartButton = new JButton();
+        EnableDebugCheckBox = new JCheckBox();
+        EnableGuiCheckBox = new JCheckBox();
+        BurnCheckBox = new JCheckBox();
+        WorldHopCheckBox = new JCheckBox();
+        AreaSizeTextBox = new JTextField();
         //======== this ========
         setTitle("Mogy WoodCutter");
         setBackground(Color.black);
@@ -185,85 +181,81 @@ public class JWindow extends JFrame {
         contentPane.setLayout(null);
 
         //---- comboBox1 ----
-        comboBox1.setModel(new DefaultComboBoxModel<>(new String[] {
+        TreeListBox.setModel(new DefaultComboBoxModel<>(new String[] {
             "Select",
             "Tree",
             "Oak",
             "Willow",
             "Yew"
         }));
-        comboBox1.addActionListener(e -> comboBox1ActionPerformed(e));
-        contentPane.add(comboBox1);
-        comboBox1.setBounds(70, 30, 170, comboBox1.getPreferredSize().height);
+        TreeListBox.addActionListener(e -> TreeListBoxHasChange(e));
+        contentPane.add(TreeListBox);
+        TreeListBox.setBounds(70, 30, 170, TreeListBox.getPreferredSize().height);
 
-        //---- label1 ----
-        label1.setText("Tree type");
-        contentPane.add(label1);
-        label1.setBounds(10, 35, label1.getPreferredSize().width, 20);
-        contentPane.add(comboBox2);
-        comboBox2.setBounds(70, 80, 170, comboBox2.getPreferredSize().height);
+        //---- TreeTypeText ----
+        TreeTypeText.setText("Tree type");
+        contentPane.add(TreeTypeText);
+        TreeTypeText.setBounds(10, 35, TreeTypeText.getPreferredSize().width, 20);
+        contentPane.add(AreaListBox);
+        AreaListBox.setBounds(70, 80, 170, AreaListBox.getPreferredSize().height);
 
-        //---- label2 ----
-        label2.setText("Location");
-        contentPane.add(label2);
-        label2.setBounds(10, 85, label2.getPreferredSize().width, 20);
+        //---- AreaSizeText ----
+        AreaSizeText.setText("Location");
+        contentPane.add(AreaSizeText);
+        AreaSizeText.setBounds(10, 85, AreaSizeText.getPreferredSize().width, 20);
 
-        //---- button1 ----
-        button1.setText("Start");
-        button1.addActionListener(e -> button1ActionPerformed(e));
-        contentPane.add(button1);
-        button1.setBounds(65, 225, 170, button1.getPreferredSize().height);
+        //---- StartButton ----
+        StartButton.setText("Start");
+        StartButton.addActionListener(e -> StartButtonisClicked(e));
+        contentPane.add(StartButton);
+        StartButton.setBounds(65, 225, 170, StartButton.getPreferredSize().height);
 
-        //---- checkBox1 ----
-        checkBox1.setText("Debug");
-        checkBox1.addActionListener(e -> checkBox1ActionPerformed(e));
-        contentPane.add(checkBox1);
-        checkBox1.setBounds(120, 260, 80, checkBox1.getPreferredSize().height);
+        //---- EnableDebugCheckBox ----
+        EnableDebugCheckBox.setText("Debug");
+        EnableDebugCheckBox.addActionListener(e -> DebugCheckBoxisChanged(e));
+        contentPane.add(EnableDebugCheckBox);
+        EnableDebugCheckBox.setBounds(120, 260, 80, EnableDebugCheckBox.getPreferredSize().height);
 
-        //---- checkBox2 ----
-        checkBox2.setText("GUI");
-        checkBox2.setSelected(true);
-        checkBox2.addActionListener(e -> checkBox2ActionPerformed(e));
-        contentPane.add(checkBox2);
-        checkBox2.setBounds(115, 200, 65, checkBox2.getPreferredSize().height);
+        //---- EnableGuiCheckBox ----
+        EnableGuiCheckBox.setText("GUI");
+        EnableGuiCheckBox.setSelected(true);
+        EnableGuiCheckBox.addActionListener(e -> GuiCheckBoxisChanged(e));
+        contentPane.add(EnableGuiCheckBox);
+        EnableGuiCheckBox.setBounds(115, 200, 65, EnableGuiCheckBox.getPreferredSize().height);
 
-        //---- checkBox3 ----
-        checkBox3.setText("Burn logs");
-        checkBox3.addActionListener(e -> checkBox3ActionPerformed(e));
-        contentPane.add(checkBox3);
-        checkBox3.setBounds(new Rectangle(new Point(115, 145), checkBox3.getPreferredSize()));
-        //---- checkBox4 ----
-        checkBox4.setText("Disable World-Hop");
-        checkBox4.addActionListener(e -> checkBox4ActionPerformed(e));
-        contentPane.add(checkBox4);
-        checkBox4.setBounds(new Rectangle(new Point(115, 170), checkBox4.getPreferredSize()));
-        //---- textbox1 ----
-        textbox1.setText("8");
-        contentPane.add(textbox1);
-        textbox1.setBounds(115, 115, 50, button1.getPreferredSize().height);
-        //---- label2 ----
-        label2.setText("Area Size");
-        contentPane.add(label2);
-        label2.setBounds(50, 120, label2.getPreferredSize().width, 15);
+        //---- BurnCheckBox ----
+        BurnCheckBox.setText("Burn/Drop logs");
+        BurnCheckBox.addActionListener(e -> BurnCheckBoxisChanged(e));
+        contentPane.add(BurnCheckBox);
+        BurnCheckBox.setBounds(new Rectangle(new Point(115, 145), BurnCheckBox.getPreferredSize()));
+        //---- WorldHopCheckBox ----
+        WorldHopCheckBox.setText("Disable World-Hop");
+        WorldHopCheckBox.addActionListener(e -> WorldHopCheckBoxisChanged(e));
+        contentPane.add(WorldHopCheckBox);
+        WorldHopCheckBox.setBounds(new Rectangle(new Point(115, 170), WorldHopCheckBox.getPreferredSize()));
+        //---- AreaSizeTextBox ----
+        AreaSizeTextBox.setText("8");
+        contentPane.add(AreaSizeTextBox);
+        AreaSizeTextBox.setBounds(115, 115, 50, StartButton.getPreferredSize().height);
+        //---- AreaSizeText ----
+        AreaSizeText.setText("Area Size");
+        contentPane.add(AreaSizeText);
+        AreaSizeText.setBounds(50, 120, AreaSizeText.getPreferredSize().width, 15);
 
         contentPane.setPreferredSize(new Dimension(285, 330));
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
-
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - hfghfgh
-    private JComboBox<String> comboBox1;
-    private JLabel label1;
-    private JComboBox comboBox2;
-    private JLabel label2;
-    private JButton button1;
-    private JCheckBox checkBox1;
-    private JCheckBox checkBox2;
-    private JCheckBox checkBox3;
-    private JCheckBox checkBox4;
-    private JTextField textbox1;
-    private JLabel label3;
+    private JComboBox<String> TreeListBox;
+    private JLabel TreeTypeText;
+    private JComboBox AreaListBox;
+    private JLabel AreaSizeText;
+    private JButton StartButton;
+    private JCheckBox EnableDebugCheckBox;
+    private JCheckBox EnableGuiCheckBox;
+    private JCheckBox BurnCheckBox;
+    private JCheckBox WorldHopCheckBox;
+    private JTextField AreaSizeTextBox;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
