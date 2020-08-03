@@ -9,7 +9,7 @@ import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.wrappers.widgets.message.Message;
 import java.awt.*;
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.3)
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.4)
 
 public class MainClass extends AbstractScript  {
     private GUI.JWindow window;
@@ -34,16 +34,12 @@ public class MainClass extends AbstractScript  {
     public void onMessage(Message message) {
         if(message.getMessage().contains("You get some")){
             GetFactory().getInterfaceGraphics().setLogcuts(GetFactory().getInterfaceGraphics().getLogcuts() + 1);
-        }
-        if(message.getMessage().contains("The fire catches")){
+        }else if(message.getMessage().contains("The fire catches")){
             GetFactory().getInterfaceGraphics().setBurned_logs(GetFactory().getInterfaceGraphics().getBurned_logs() + 1);
-        }
-        GetFactory().getMessage().Answer(message);
-        if(message.getMessage().contains("You can't light a fire here.")){
+        }else if(message.getMessage().contains("You can't light a fire here.")){
             GetFactory().getIU().SetThought("I can't light a fire here!!");
             GetFactory().getDoLogs().setLighting(false);
-        }
-        if(message.getMessage().contains("I can't reach that!")){
+        }else if(message.getMessage().contains("I can't reach that!")){
 
             if(getGameObjects().closest("Wilderness Ditch").exists()){
                 GetFactory().getIU().SetActivity( "Jump!");
@@ -51,6 +47,8 @@ public class MainClass extends AbstractScript  {
             }else {
                 GetFactory().getDoWalk().walkingtoarea(Selectedarea);
             }
+        }else{
+            GetFactory().getMessage().Answer(message, window);
         }
     }
     @Override

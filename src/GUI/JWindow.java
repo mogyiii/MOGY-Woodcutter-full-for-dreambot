@@ -19,6 +19,7 @@ public class JWindow extends JFrame {
     private boolean gui = true;
     private boolean burn = false;
     private boolean wHop = false;
+    private boolean IsTalker = false;
     public JWindow(MainClass main) {
         this.main = main;
         initComponents();
@@ -142,6 +143,11 @@ public class JWindow extends JFrame {
     public boolean getwhop(){
         return wHop;
     }
+
+    public boolean isTalker() {
+        return IsTalker;
+    }
+
     private void GuiCheckBoxisChanged(ActionEvent e) {
         if(EnableGuiCheckBox.isSelected()){
             gui = true;
@@ -163,6 +169,13 @@ public class JWindow extends JFrame {
             wHop = false;
         }
     }
+    private void TalkerChanged(ActionEvent e) {
+        if(Talker.isSelected()){
+            IsTalker = true;
+        }else{
+            IsTalker = false;
+        }
+    }
     private void initComponents() {
         TreeListBox = new JComboBox<>();
         TreeTypeText = new JLabel();
@@ -173,6 +186,7 @@ public class JWindow extends JFrame {
         EnableGuiCheckBox = new JCheckBox();
         BurnCheckBox = new JCheckBox();
         WorldHopCheckBox = new JCheckBox();
+        Talker = new JCheckBox();
         AreaSizeTextBox = new JTextField();
         //======== this ========
         setTitle("Mogy WoodCutter");
@@ -241,6 +255,11 @@ public class JWindow extends JFrame {
         AreaSizeText.setText("Area Size");
         contentPane.add(AreaSizeText);
         AreaSizeText.setBounds(50, 120, AreaSizeText.getPreferredSize().width, 15);
+        //----Talker-----
+        Talker.setText("Disable Talker");
+        Talker.addActionListener(e -> TalkerChanged(e));
+        contentPane.add(Talker);
+        Talker.setBounds(new Rectangle(new Point(115, 285), Talker.getPreferredSize()));
 
         contentPane.setPreferredSize(new Dimension(285, 330));
         pack();
@@ -256,6 +275,7 @@ public class JWindow extends JFrame {
     private JCheckBox EnableGuiCheckBox;
     private JCheckBox BurnCheckBox;
     private JCheckBox WorldHopCheckBox;
+    private JCheckBox Talker;
     private JTextField AreaSizeTextBox;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
