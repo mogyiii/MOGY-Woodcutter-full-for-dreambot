@@ -1,9 +1,10 @@
 package Do;
 
 import GUI.JWindow;
+import org.dreambot.api.methods.input.Keyboard;
+import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.skills.Skill;
 import sun.net.www.http.HttpClient;
-import woodcutter.MainClass;
 import org.dreambot.api.wrappers.widgets.message.Message;
 
 import java.io.BufferedReader;
@@ -12,22 +13,20 @@ import java.io.OutputStream;
 import java.net.*;
 
 public class AnswareMessage {
-    private MainClass mainClass;
     private Factory _factory;
-    public AnswareMessage(MainClass main, Factory factory) {
-        mainClass = main;
+    public AnswareMessage(Factory factory) {
         _factory = factory;
     }
     public void Answer(Message message, JWindow window){
         if(!window.isTalker()){
-            if(PlayerIsExist(message.getUsername()) && !(message.getUsername().equals(mainClass.getLocalPlayer().getName()))){
-                mainClass.getKeyboard().type(ResponseCutter(SendPostMessage(message.getMessage())));
+            if(PlayerIsExist(message.getUsername()) && !(message.getUsername().equals(_factory.getMain().getLocalPlayer().getName()))){
+                Keyboard.type(ResponseCutter(SendPostMessage(message.getMessage())));
             }
         }
     }
     private boolean PlayerIsExist(String message){
-        for(int i = 0; i < mainClass.getPlayers().all().size(); i++){
-            if(message.contains(mainClass.getPlayers().all().get(i).getName())){
+        for(int i = 0; i < Players.all().size(); i++){
+            if(message.contains(Players.all().get(i).getName())){
                 return true;
             }
         }
@@ -57,7 +56,7 @@ public class AnswareMessage {
             }
             return Response;
         } catch (java.io.IOException e) {
-            mainClass.log("" + e.toString());
+            _factory.getMain().log("" + e.toString());
         }
         return Response;
     }

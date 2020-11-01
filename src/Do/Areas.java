@@ -1,7 +1,6 @@
 package Do;
 
 import org.dreambot.api.methods.map.Area;
-import woodcutter.MainClass;
 import org.dreambot.api.methods.map.Tile;
 public class Areas {
     //Variables
@@ -94,11 +93,8 @@ public class Areas {
     Area LumbrigeYew = new Area(3134,3265,3141,3226);
     Area MagicTrainingMagicTree = new Area(3353, 3324, 3373, 3294);
     Area ClosestBank = new Area();
-    private MainClass mainClass;
-    private Factory _factory;
-    public Areas(MainClass main, Factory factory) {
-        mainClass = main;
-        _factory = factory;
+    public Areas() {
+
     }
 
     //Getters

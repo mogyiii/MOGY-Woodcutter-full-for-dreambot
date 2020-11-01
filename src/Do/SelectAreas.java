@@ -4,12 +4,9 @@ import org.dreambot.api.methods.map.Area;
 import woodcutter.MainClass;
 
 public class SelectAreas{
-
     private Area currentArea;
-    private MainClass mainClass;
     private Factory _factory;
-    public SelectAreas(MainClass main, Factory factory) {
-        mainClass = main;
+    public SelectAreas(Factory factory) {
         _factory = factory;
     }
     public Area getCurrentArea() {

@@ -122,11 +122,7 @@ public class JWindow extends JFrame {
     }
 
     private void DebugCheckBoxisChanged(ActionEvent e) {
-        if(EnableDebugCheckBox.isSelected()){
-            debugger = true;
-        }else{
-            debugger = false;
-        }
+        debugger = !debugger;
     }
     public boolean getisenableDebbuger(){
         return debugger;
@@ -149,32 +145,16 @@ public class JWindow extends JFrame {
     }
 
     private void GuiCheckBoxisChanged(ActionEvent e) {
-        if(EnableGuiCheckBox.isSelected()){
-            gui = true;
-        }else{
-            gui = false;
-        }
+        gui = !gui;
     }
     private void BurnCheckBoxisChanged(ActionEvent e) {
-        if(BurnCheckBox.isSelected()){
-            burn = true;
-        }else{
-            burn = false;
-        }
+        burn = !burn;
     }
     private void WorldHopCheckBoxisChanged(ActionEvent e) {
-        if(WorldHopCheckBox.isSelected()){
-            wHop = true;
-        }else{
-            wHop = false;
-        }
+        wHop = !wHop;
     }
     private void TalkerChanged(ActionEvent e) {
-        if(Talker.isSelected()){
-            IsTalker = true;
-        }else{
-            IsTalker = false;
-        }
+        IsTalker = !IsTalker;
     }
     private void initComponents() {
         TreeListBox = new JComboBox<>();
@@ -222,13 +202,13 @@ public class JWindow extends JFrame {
         StartButton.setText("Start");
         StartButton.addActionListener(e -> StartButtonisClicked(e));
         contentPane.add(StartButton);
-        StartButton.setBounds(65, 225, 170, StartButton.getPreferredSize().height);
+        StartButton.setBounds(65, 225, 170, 25);
 
         //---- EnableDebugCheckBox ----
         EnableDebugCheckBox.setText("Debug");
         EnableDebugCheckBox.addActionListener(e -> DebugCheckBoxisChanged(e));
         contentPane.add(EnableDebugCheckBox);
-        EnableDebugCheckBox.setBounds(120, 260, 80, EnableDebugCheckBox.getPreferredSize().height);
+        EnableDebugCheckBox.setBounds(115, 260, 80, EnableDebugCheckBox.getPreferredSize().height);
 
         //---- EnableGuiCheckBox ----
         EnableGuiCheckBox.setText("GUI");
@@ -250,7 +230,7 @@ public class JWindow extends JFrame {
         //---- AreaSizeTextBox ----
         AreaSizeTextBox.setText("8");
         contentPane.add(AreaSizeTextBox);
-        AreaSizeTextBox.setBounds(115, 115, 50, StartButton.getPreferredSize().height);
+        AreaSizeTextBox.setBounds(115, 115, 50, 25);
         //---- AreaSizeText ----
         AreaSizeText.setText("Area Size");
         contentPane.add(AreaSizeText);

@@ -1,15 +1,9 @@
 package Do;
-
-import woodcutter.MainClass;
-
 public class InteractionUser{
     private String thought = "";
     private String activity;
-    private MainClass mainClass;
-    private Factory _factory;
-    public InteractionUser(MainClass main, Factory factory) {
-        mainClass = main;
-        _factory = factory;
+    public InteractionUser() {
+
     }
 
     public void SetThought(String _thought){thought = _thought;}

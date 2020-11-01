@@ -1,8 +1,12 @@
 package Do;
 
+import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.interactive.Players;
+import org.dreambot.api.methods.map.Map;
 import org.dreambot.api.methods.map.Tile;
 import org.dreambot.api.methods.skills.Skill;
-import woodcutter.MainClass;
+import org.dreambot.api.methods.skills.SkillTracker;
+import org.dreambot.api.methods.skills.Skills;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -21,12 +25,10 @@ public class InterfaceGraphics{
     private String dot = "...";
     private int i = 0;
     private long second2;
-    private MainClass mainClass;
     private Factory _factory;
     private boolean ChangeDraw = false;
     private long startTime = 0;
-    public InterfaceGraphics(MainClass main, Factory factory) {
-        mainClass = main;
+    public InterfaceGraphics(Factory factory) {
         _factory = factory;
     }
 
@@ -51,43 +53,43 @@ public class InterfaceGraphics{
         }
     }
     private void DebugDrawn(Graphics graphics){
-        if(mainClass.isStarter()) {
+        if(_factory.getMain().isStarter()) {
             graphics.setColor(Color.white);
             /*if (!starting) {
                 Tile[] currentareatiles = _factory.getSelectAreas().getCurrentArea().getTiles();
                 for (int i = 0; i < currentareatiles.length - 1; i++) {
-                    graphics.drawPolygon(mainClass.getMap().getPolygon(currentareatiles[i]));
+                    graphics.drawPolygon(_factory.getMain().getMap().getPolygon(currentareatiles[i]));
                 }
             }*/
             MapDraw(graphics);
             graphics.setColor(Color.RED);
             graphics.drawString("Closest tree: " + _factory.getDebuger().getTreeCloses(), 10, 100);
             graphics.drawString("Thought: " + _factory.getIU().getThought(), 10, 120);
-            graphics.drawString("Closest bank: " + mainClass.getBank().getClosestBankLocation(), 10, 140);
-            graphics.drawString("Tree type: " + mainClass.getWindow().getTreetype(), 10, 160);
+            graphics.drawString("Closest bank: " + Bank.getClosestBankLocation(), 10, 140);
+            graphics.drawString("Tree type: " + _factory.getMain().getWindow().getTreetype(), 10, 160);
             graphics.setColor(Color.cyan);
             graphics.drawPolygon(_factory.getDebuger().getTreeTile().getPolygon());
             graphics.setColor(Color.yellow);
-            graphics.drawPolygon(mainClass.getMap().getPolygon(mainClass.getPlayers().localPlayer().getTile()));
+            graphics.drawPolygon(Map.getPolygon(Players.localPlayer().getTile()));
         }
     }
     private void FiremakingDrawn(Graphics graphics){
         graphics.setColor(Color.orange);
 
         if(ChangeDraw){
-            graphics.drawString("Firemaking level: " + mainClass.getSkills().getRealLevel(Skill.FIREMAKING) + " (" + (mainClass.getSkills().getRealLevel(Skill.FIREMAKING) - _factory.getXPs().getFiremakingStartedlevelup()) + ")", 30, 155);
+            graphics.drawString("Firemaking level: " + Skills.getRealLevel(Skill.FIREMAKING) + " (" + (SkillTracker.getGainedLevels(Skill.FIREMAKING)) + ")", 30, 155);
         }else{
-            graphics.drawString("Next level: " + mainClass.getSkillTracker().getTimeToLevel(Skill.FIREMAKING) / 60000 + "(Minutes)", 30, 155);
+            graphics.drawString("Next level: " + SkillTracker.getTimeToLevel(Skill.FIREMAKING) / 60000 + "(Minutes)", 30, 155);
         }//lvl
         if(ChangeDraw){
-            graphics.drawString("Xp remaining: " + (mainClass.getSkills().getExperienceToLevel(Skill.FIREMAKING)), 30, 185);
+            graphics.drawString("Xp remaining: " + (Skills.getExperienceToLevel(Skill.FIREMAKING)), 30, 185);
         }else{
-            graphics.drawString("Xp gained: " + (mainClass.getSkillTracker().getGainedExperience(Skill.FIREMAKING) - _factory.getXPs().getCurrent_firemaking_xp()), 30, 185);
+            graphics.drawString("Xp gained: " + (SkillTracker.getGainedExperience(Skill.FIREMAKING)), 30, 185);
         }//Xp
         if(ChangeDraw){
             graphics.drawString("Burned logs: " + burned_logs, 30, 215);
         }else {
-            graphics.drawString("Estimated Xp/hour: " + mainClass.getSkillTracker().getGainedExperiencePerHour(Skill.FIREMAKING), 30, 215);
+            graphics.drawString("Estimated Xp/hour: " + SkillTracker.getGainedExperiencePerHour(Skill.FIREMAKING), 30, 215);
         }
     }
     private void WoodcuttingDrawn(Graphics graphics){
@@ -96,30 +98,30 @@ public class InterfaceGraphics{
         graphics.setColor(new Color(97, 185, 0));
 
         if(ChangeDraw){
-            graphics.drawString("Woodcutting level: " + mainClass.getSkills().getRealLevel(Skill.WOODCUTTING) + " (" + (mainClass.getSkills().getRealLevel(Skill.WOODCUTTING) - _factory.getXPs().getStartedlevelup()) + ")", 378, 155);
+            graphics.drawString("Woodcutting level: " + Skills.getRealLevel(Skill.WOODCUTTING) + " (" + (SkillTracker.getGainedLevels(Skill.WOODCUTTING)) + ")", 378, 155);
         }else{
-            graphics.drawString("Next level: " + mainClass.getSkillTracker().getTimeToLevel(Skill.WOODCUTTING) / 60000 + "(Minutes)", 378, 155);
+            graphics.drawString("Next level: " + SkillTracker.getTimeToLevel(Skill.WOODCUTTING) / 60000 + "(Minutes)", 378, 155);
         }//lvl
         if(ChangeDraw){//Xp
-            graphics.drawString("Xp remaining: " + (mainClass.getSkills().getExperienceToLevel(Skill.WOODCUTTING)), 378, 184);
+            graphics.drawString("Xp remaining: " + (Skills.getExperienceToLevel(Skill.WOODCUTTING)), 378, 184);
         }else{
-            graphics.drawString("Xp gained: " + (mainClass.getSkillTracker().getGainedExperience(Skill.WOODCUTTING) - _factory.getXPs().getCurrent_woodcutting_xp()), 378, 184);
+            graphics.drawString("Xp gained: " + (SkillTracker.getGainedExperience(Skill.WOODCUTTING)), 378, 184);
         }//Xp
 
         graphics.drawString("Logs/hour: " + logcuts * (int) (3600D / _factory.getTime().eclapsedsec(_factory.getTime().getStartTime())), 378, 250);
         if(ChangeDraw){
             graphics.drawString("Logs Cut: " + logcuts, 378, 214);
         }else{
-            graphics.drawString("Estimated Xp/hour: " + mainClass.getSkillTracker().getGainedExperiencePerHour(Skill.WOODCUTTING), 378, 214);
+            graphics.drawString("Estimated Xp/hour: " + SkillTracker.getGainedExperiencePerHour(Skill.WOODCUTTING), 378, 214);
         }
     }
     private void MapDraw(Graphics graphics){
-        if(mainClass.isStarter()) {
+        if(_factory.getMain().isStarter()) {
             graphics.setColor(Color.MAGENTA);
             Tile[] currentareatiles = _factory.getSelectAreas().getCurrentArea().getTiles();
             if (_factory.getSelectAreas().getCurrentArea().getTiles() != null) {
                 for (int i = 0; i < currentareatiles.length - 1; i++){
-                    graphics.drawRect((int)mainClass.getMap().tileToMiniMap(currentareatiles[i]).getX(), (int)mainClass.getMap().tileToMiniMap(currentareatiles[i]).getY(), 2, 2);
+                    graphics.drawRect((int)Map.tileToMiniMap(currentareatiles[i]).getX(), (int)Map.tileToMiniMap(currentareatiles[i]).getY(), 2, 2);
                 }
             }
         }

@@ -12,7 +12,6 @@ public class Factory {
     private DoLogs DL;
     private SelectAreas SA;
     private Time Time;
-    private XPs XP;
     private InterfaceGraphics IG;
     private Debuger DB;
     private AnitBan AB;
@@ -20,20 +19,19 @@ public class Factory {
     private AnswareMessage message;
     public Factory(MainClass main) {
         this._main = main;
-        IU = new InteractionUser(main, this);
-        DW = new DoWalk(main, this);
-        CK = new Checking(main, this);
-        CA = new ChopAction(main, this);
-        CR = new Cutters(main, this);
-        DL = new DoLogs(main, this);
-        SA = new SelectAreas(main, this);
-        Time = new Time(main, this);
-        XP = new XPs(main, this);
-        IG = new InterfaceGraphics(main, this);
-        DB = new Debuger(main, this);
-        AB = new AnitBan(main, this);
-        Areas = new Areas(main, this);
-        message = new AnswareMessage(main, this);
+        IU = new InteractionUser();
+        DW = new DoWalk(this);
+        CK = new Checking(this);
+        CA = new ChopAction(this);
+        CR = new Cutters(this);
+        DL = new DoLogs(this);
+        SA = new SelectAreas(this);
+        Time = new Time();
+        IG = new InterfaceGraphics(this);
+        DB = new Debuger(this);
+        AB = new AnitBan(this);
+        Areas = new Areas();
+        message = new AnswareMessage(this);
     }
 
     public InteractionUser getIU() {
@@ -56,10 +54,6 @@ public class Factory {
         return Time;
     }
 
-    public XPs getXPs() {
-        return XP;
-    }
-
     public InterfaceGraphics getInterfaceGraphics() {
         return IG;
     }
@@ -76,7 +70,7 @@ public class Factory {
         return Areas;
     }
 
-    public MainClass get_mainClass() {
+    public MainClass getMain() {
         return _main;
     }
 

@@ -1,13 +1,9 @@
 package Do;
 
-import woodcutter.MainClass;
-
 public class Time{
-    private MainClass mainClass;
-    private Factory _factory;
-    public Time(MainClass main, Factory factory) {
-        mainClass = main;
-        _factory = factory;
+
+    public Time() {
+
     }
 
     public long getStartTime() {

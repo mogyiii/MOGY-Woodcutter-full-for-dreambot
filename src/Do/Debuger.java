@@ -1,24 +1,22 @@
 package Do;
 
+import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.map.Tile;
-import woodcutter.MainClass;
 
 public class Debuger{
     private String treeCloses = "";
     private Tile TreeTile;
-    private MainClass mainClass;
     private Factory _factory;
-    public Debuger(MainClass main, Factory factory) {
-        mainClass = main;
+    public Debuger(Factory factory) {
         _factory = factory;
     }
 
     public void debug(){
-        treeCloses = "X: " + mainClass.getGameObjects().closest(mainClass.getWindow().getTreetype()).getX() + ", Y: " + mainClass.getGameObjects().closest(mainClass.getWindow().getTreetype()).getY();
-        if(!mainClass.getWindow().getTreetype().equals("Tree")){
-            TreeTile = mainClass.getGameObjects().closest(mainClass.getWindow().getTreetype()).getTile();
+        treeCloses = "X: " + GameObjects.closest(_factory.getMain().getWindow().getTreetype()).getX() + ", Y: " + GameObjects.closest(_factory.getMain().getWindow().getTreetype()).getY();
+        if(!_factory.getMain().getWindow().getTreetype().equals("Tree")){
+            TreeTile = GameObjects.closest(_factory.getMain().getWindow().getTreetype()).getTile();
         }else{
-            TreeTile = mainClass.getGameObjects().closest(_factory.getChecking().checktreeType()).getTile();
+            TreeTile = GameObjects.closest(_factory.getChecking().checktreeType()).getTile();
         }
     }
 

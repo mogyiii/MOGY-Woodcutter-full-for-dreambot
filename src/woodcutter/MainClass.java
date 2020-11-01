@@ -1,15 +1,17 @@
 package woodcutter;
 
 import GUI.JWindow;
-import org.dreambot.api.data.GameState;
+import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.skills.Skill;
+import org.dreambot.api.methods.skills.SkillTracker;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.wrappers.widgets.message.Message;
 import java.awt.*;
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.4)
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.5)
 
 public class MainClass extends AbstractScript  {
     private GUI.JWindow window;
@@ -23,8 +25,6 @@ public class MainClass extends AbstractScript  {
         getWindow().setVisible(true);
         this.factory = new Do.Factory(this);
         GetFactory().getIU().SetActivity( "Starting");
-        GetFactory().getTime().setStartTime(System.currentTimeMillis());
-        GetFactory().getSelectAreas().setCurrentArea(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range));
     }
     @Override
     public void onExit() {
@@ -41,7 +41,7 @@ public class MainClass extends AbstractScript  {
             GetFactory().getDoLogs().setLighting(false);
         }else if(message.getMessage().contains("I can't reach that!")){
 
-            if(getGameObjects().closest("Wilderness Ditch").exists()){
+            if(GameObjects.closest("Wilderness Ditch").exists()){
                 GetFactory().getIU().SetActivity( "Jump!");
                 GetFactory().getDoWalk().WildernessJumping();
             }else {
@@ -63,22 +63,19 @@ public class MainClass extends AbstractScript  {
         if(isStarter()) {
             if(GetFactory().getInterfaceGraphics().isStarting()){
                 range = getWindow().getAreaSize();
-                GetFactory().getSelectAreas().setCurrentArea(new Area(getLocalPlayer().getX() -range,getLocalPlayer().getY() -range,getLocalPlayer().getX() +range,getLocalPlayer().getY()+range));
+                GetFactory().getTime().setStartTime(System.currentTimeMillis());
+                GetFactory().getSelectAreas().setCurrentArea(Area.generateArea(range, getLocalPlayer().getTile()));
                 GetFactory().getInterfaceGraphics().setStarting(false);
-                getSkillTracker().start(Skill.WOODCUTTING);
-                getSkillTracker().start(Skill.FIREMAKING);
-                GetFactory().getXPs().setCurrent_woodcutting_xp(getSkillTracker().getGainedExperience(Skill.WOODCUTTING));
-                GetFactory().getXPs().setCurrent_firemaking_xp(getSkillTracker().getGainedExperience(Skill.FIREMAKING));
-                GetFactory().getXPs().setStartedlevelup(getSkills().getRealLevel(Skill.WOODCUTTING));
-                GetFactory().getXPs().setFiremakingStartedlevelup(getSkills().getRealLevel(Skill.FIREMAKING));
+                SkillTracker.start(Skill.WOODCUTTING);
+                SkillTracker.start(Skill.FIREMAKING);
             }
             GetFactory().getSelectAreas().SelectedArea(getWindow().getAreaLocation(), getWindow().getTreetype());
-            GetFactory().getAntiBan().random_AntiBan();
+            GetFactory().getAntiBan().randomAntiBan();
         }
         if(getWindow().getisenableDebbuger()){
             GetFactory().getDebuger().debug();
         }
-        GetFactory().getAreas().SetClosesBank(getBank().getClosestBankLocation().getCenter().getArea(2));
+        GetFactory().getAreas().SetClosesBank(Bank.getClosestBankLocation().getCenter().getArea(2));
         return ((int) (Math.random() * 20));
     }
 
