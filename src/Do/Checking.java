@@ -15,7 +15,7 @@ public class Checking{
     }
 
     public String checkaxe(){
-        String[] axes = {"Infernal axe", "3rd age axe", "Dragon axe", "Rune axe", "Adamant axe", "Mithril axe", "Black axe", "Blessed axe", "Steel axe", "Iron axe", "Bronze axe"};
+        String[] axes = {"Crystal axe","Infernal axe", "3rd age axe", "Dragon axe", "Gilded axe", "Rune axe", "Adamant axe", "Mithril axe", "Black axe", "Blessed axe", "Steel axe", "Iron axe", "Bronze axe"};
         for(int i = 0; i < axes.length; i++) {
             if (Inventory.contains(axes[i])){
                 _factory.getIU().SetThought(axes[i] + " is exist!");
@@ -26,7 +26,6 @@ public class Checking{
     }
     public boolean checktinderbox(){
         if (Inventory.contains("Tinderbox")){
-            _factory.getIU().SetThought( "Tinderbox is exist!");
             return true;
         }else{
             return false;

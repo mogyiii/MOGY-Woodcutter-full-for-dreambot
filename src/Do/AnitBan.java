@@ -50,7 +50,7 @@ public class AnitBan{
             _factory.getMain().sleep(200, 500);
         }
         if(chances > 355 && chances <360){
-            if(_factory.getMain().getWindow().getwhop()) {
+            if(!_factory.getMain().getWindow().getwhop()) {
                 _factory.getIU().SetActivity("Anti-ban: Hop world");
 
                 if (!Client.isMembers()) {
@@ -65,8 +65,10 @@ public class AnitBan{
             }
         }
         if(Dialogues.canContinue()){
+            _factory.getIU().SetActivity("Anti-ban: Dialogues click to Continue");
             Dialogues.clickContinue();
         }
+        _factory.getMain().getRandomManager().runRandomManager();
     }
     private Skill ChoseRandomSkill(){
         Skill[] Skills = new Skill[]{Skill.WOODCUTTING,Skill.FIREMAKING};

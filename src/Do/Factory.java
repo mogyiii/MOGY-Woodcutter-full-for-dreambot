@@ -1,5 +1,8 @@
 package Do;
 
+import Do.Paint.Buttons;
+import Do.Paint.InterfaceGraphics;
+import org.dreambot.core.B;
 import woodcutter.MainClass;
 
 public class Factory {
@@ -17,6 +20,7 @@ public class Factory {
     private AnitBan AB;
     private Areas Areas;
     private AnswareMessage message;
+    private Buttons buttons;
     public Factory(MainClass main) {
         this._main = main;
         IU = new InteractionUser();
@@ -32,6 +36,7 @@ public class Factory {
         AB = new AnitBan(this);
         Areas = new Areas();
         message = new AnswareMessage(this);
+        buttons = new Buttons(this);
     }
 
     public InteractionUser getIU() {
@@ -76,5 +81,9 @@ public class Factory {
 
     public AnswareMessage getMessage() {
         return message;
+    }
+
+    public Buttons getButtons() {
+        return buttons;
     }
 }

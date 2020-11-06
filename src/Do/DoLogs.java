@@ -3,9 +3,11 @@ package Do;
 import org.dreambot.api.methods.container.impl.Inventory;
 import org.dreambot.api.methods.container.impl.Shop;
 import org.dreambot.api.methods.container.impl.bank.Bank;
+import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.interactive.NPCs;
 import org.dreambot.api.methods.interactive.Players;
 import org.dreambot.api.methods.walking.impl.Walking;
+import org.dreambot.api.wrappers.interactive.GameObject;
 import org.dreambot.api.wrappers.interactive.NPC;
 
 public class DoLogs {
@@ -19,7 +21,6 @@ public class DoLogs {
         _factory.getIU().SetThought( "i hope, i find Bernie!");
         lighting = true;
         while(Inventory.contains(logname)){
-            _factory.getMain().log(logname);
             if(_factory.getMain().getLocalPlayer().isAnimating()){
                 _factory.getIU().SetThought("Light up now!!!");
                 _factory.getMain().sleep(1500, 3000);
@@ -28,13 +29,17 @@ public class DoLogs {
                 _factory.getMain().sleep(200,300);
             }else if(!lighting){
                 Walking.walk(_factory.getSelectAreas().getCurrentArea().getRandomTile());
-                _factory.getMain().sleep(200,300);
+                _factory.getMain().sleep(500,800);
                 lighting = true;
-            }else{
+            }else if(GameObjects.all(GameObject -> GameObject != null && GameObject.getTile().equals(Players.localPlayer().getTile()) && GameObject.getName().equals("Fire")).size() > 0){
+                _factory.getIU().SetThought("I can't light a fire here...");
+                lighting = false;
+                _factory.getMain().sleep(200, 300);
+            }else if(Walking.getDestination() == null || Walking.getDestination().getTile().equals(Players.localPlayer().getTile())){
                 _factory.getIU().SetThought("Burning...");
                 Inventory.interact("Tinderbox", "Use");
                 Inventory.interact(logname, "Use");
-                _factory.getMain().sleep(1500, 3000);
+                _factory.getMain().sleep(1000, 1500);
             }
         }
     }
@@ -49,6 +54,15 @@ public class DoLogs {
                 Bank.close();
                 _factory.getMain().sleep(200, 3000);
             }
+        }
+    }
+    public String WhatDoIDoWithTheLogs(){
+        if(_factory.getMain().getWindow().getburn() && _factory.getChecking().checktinderbox()){
+            return "I Burn";
+        }else if(_factory.getMain().getWindow().getburn() && !_factory.getChecking().checktinderbox()){
+            return "I Drop";
+        }else{
+            return "I take it to the Bank";
         }
     }
     public void selling(String logname){

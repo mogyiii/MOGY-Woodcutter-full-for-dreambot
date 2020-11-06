@@ -5,13 +5,17 @@ import org.dreambot.api.methods.container.impl.bank.Bank;
 import org.dreambot.api.methods.interactive.GameObjects;
 import org.dreambot.api.methods.skills.Skill;
 import org.dreambot.api.methods.skills.SkillTracker;
+import org.dreambot.api.randoms.RandomManager;
+import org.dreambot.api.randoms.RandomSolver;
 import org.dreambot.api.script.AbstractScript;
 import org.dreambot.api.script.Category;
 import org.dreambot.api.script.ScriptManifest;
 import org.dreambot.api.methods.map.Area;
 import org.dreambot.api.wrappers.widgets.message.Message;
 import java.awt.*;
-@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.5)
+import java.awt.event.MouseEvent;
+
+@ScriptManifest(category = Category.WOODCUTTING, name = "Mogy Woodcutter", author = "Mogyiii", version = 2.6)
 
 public class MainClass extends AbstractScript  {
     private GUI.JWindow window;
@@ -33,9 +37,9 @@ public class MainClass extends AbstractScript  {
     @Override
     public void onMessage(Message message) {
         if(message.getMessage().contains("You get some")){
-            GetFactory().getInterfaceGraphics().setLogcuts(GetFactory().getInterfaceGraphics().getLogcuts() + 1);
+            GetFactory().getInterfaceGraphics().getData().setLogcuts(GetFactory().getInterfaceGraphics().getData().getLogcuts() + 1);
         }else if(message.getMessage().contains("The fire catches")){
-            GetFactory().getInterfaceGraphics().setBurned_logs(GetFactory().getInterfaceGraphics().getBurned_logs() + 1);
+            GetFactory().getInterfaceGraphics().getData().setBurned_logs(GetFactory().getInterfaceGraphics().getData().getBurned_logs() + 1);
         }else if(message.getMessage().contains("You can't light a fire here.")){
             GetFactory().getIU().SetThought("I can't light a fire here!!");
             GetFactory().getDoLogs().setLighting(false);
@@ -60,12 +64,12 @@ public class MainClass extends AbstractScript  {
     @Override
     public int onLoop() {
 
-        if(isStarter()) {
-            if(GetFactory().getInterfaceGraphics().isStarting()){
+        if(isStarter() && !getRandomManager().isSolving()) {
+            if(GetFactory().getInterfaceGraphics().getData().isStarting()){
                 range = getWindow().getAreaSize();
                 GetFactory().getTime().setStartTime(System.currentTimeMillis());
                 GetFactory().getSelectAreas().setCurrentArea(Area.generateArea(range, getLocalPlayer().getTile()));
-                GetFactory().getInterfaceGraphics().setStarting(false);
+                GetFactory().getInterfaceGraphics().getData().setStarting(false);
                 SkillTracker.start(Skill.WOODCUTTING);
                 SkillTracker.start(Skill.FIREMAKING);
             }
@@ -75,8 +79,15 @@ public class MainClass extends AbstractScript  {
         if(getWindow().getisenableDebbuger()){
             GetFactory().getDebuger().debug();
         }
+
         GetFactory().getAreas().SetClosesBank(Bank.getClosestBankLocation().getCenter().getArea(2));
         return ((int) (Math.random() * 20));
+    }
+
+    @Override
+    public void onMouse(MouseEvent event) {
+        super.onMouse(event);
+        factory.getButtons().ButtonsHandle(event);
     }
 
     //Setters

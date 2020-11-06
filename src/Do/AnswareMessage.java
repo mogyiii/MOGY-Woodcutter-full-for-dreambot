@@ -66,6 +66,7 @@ public class AnswareMessage {
         for(int i = response.indexOf("<!-- Begin Response !-->"); i < response.indexOf("<!-- End Response !-->"); i++){
             Message += response.charAt(i);
         }
-        return Message.replace('"', ' ').replace("<!-- Begin Response !-->", "");
+        _factory.getIU().SetActivity("Chatting...");
+        return Message.replace('"', ' ').replace("<!-- Begin Response !-->", "").replace("elbot", Players.localPlayer().getName()).replace("Elbot", Players.localPlayer().getName());
     }
 }

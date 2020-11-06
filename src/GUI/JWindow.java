@@ -23,14 +23,7 @@ public class JWindow extends JFrame {
     public JWindow(MainClass main) {
         this.main = main;
         initComponents();
-        TreeListBox.addItem("Achey tree");
-        TreeListBox.addItem("Teak tree");
-        TreeListBox.addItem("Maple tree");
-        TreeListBox.addItem("Arctic pine");
-        TreeListBox.addItem("Hollow tree");
-        TreeListBox.addItem("Mahogany tree");
-        TreeListBox.addItem("Magic tree");
-        TreeListBox.addItem("Redwood tree");
+
     }
 
     private void StartButtonisClicked(ActionEvent e) {
@@ -144,9 +137,7 @@ public class JWindow extends JFrame {
         return IsTalker;
     }
 
-    private void GuiCheckBoxisChanged(ActionEvent e) {
-        gui = !gui;
-    }
+    private void GuiCheckBoxisChanged(ActionEvent e) { gui = !gui; }
     private void BurnCheckBoxisChanged(ActionEvent e) {
         burn = !burn;
     }
@@ -156,6 +147,15 @@ public class JWindow extends JFrame {
     private void TalkerChanged(ActionEvent e) {
         IsTalker = !IsTalker;
     }
+
+    public void setDebugger(boolean debugger) {
+        this.debugger = debugger;
+    }
+
+    public void setGui(boolean gui) {
+        this.gui = gui;
+    }
+
     private void initComponents() {
         TreeListBox = new JComboBox<>();
         TreeTypeText = new JLabel();
@@ -176,11 +176,22 @@ public class JWindow extends JFrame {
 
         //---- comboBox1 ----
         TreeListBox.setModel(new DefaultComboBoxModel<>(new String[] {
-            "Select",
-            "Tree",
-            "Oak",
-            "Willow",
-            "Yew"
+                "Select",
+                "Tree",
+                "Achey tree",
+                "Oak",
+                "Willow",
+                "Teak tree",
+                "Mature juniper tree",
+                "Maple tree",
+                "Hollow tree",
+                "Mahogany tree",
+                "Arctic pine tree",
+                "Yew",
+                "Blisterwood Tree",
+                "Sulliuscep",
+                "Magic tree",
+                "Redwood tree",
         }));
         TreeListBox.addActionListener(e -> TreeListBoxHasChange(e));
         contentPane.add(TreeListBox);
